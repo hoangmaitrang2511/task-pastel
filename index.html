@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Bảng Task Pastel</title>
+<script>try{const t=localStorage.getItem("tp-theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap">
@@ -15,28 +16,29 @@
   --pink:#f6bfd6; --pink-strong:#e28bb0; --pink-soft:#fde8f1;
   --blue:#bcdcf4; --blue-strong:#6fa9d6; --blue-soft:#e6f2fc;
   --mint:#c4ead8; --lav:#dccff3; --peach:#fbd9c4;
-  --done:#74b99a; --warn:#e3a35c; --late:#d9677f;
+  --done:#74b99a; --warn:#e3a35c; --late:#d9677f; --on-accent:#ffffff;
   --font:"Lexend",system-ui,-apple-system,"Segoe UI",sans-serif;
   --r:14px;
 }
+/* Dark: plain black and greys */
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#1d1a24; --surface:#26222f; --sunken:#2e2939; --line:#3a3446;
-  --fg:#f1e9f2; --muted:#a99db0;
-  --pink:#a65f80; --pink-strong:#f0a3c4; --pink-soft:#3a2836;
-  --blue:#4f7aa0; --blue-strong:#94c6ec; --blue-soft:#24324a;
-  --mint:#4c8a70; --lav:#7563a0; --peach:#a5735a;
-  --done:#86cdac; --warn:#f0b878; --late:#ef8ba0; color-scheme:dark}}
+  --bg:#0e0e0f; --surface:#18181a; --sunken:#222225; --line:#2c2c30;
+  --fg:#ececee; --muted:#96969c;
+  --pink:#3a3a3f; --pink-strong:#d6d6da; --pink-soft:#2a2a2e;
+  --blue:#5a5a61; --blue-strong:#b4b4ba; --blue-soft:#2a2a2e;
+  --mint:#7c7c84; --lav:#9c9ca3; --peach:#c4c4ca;
+  --done:#a8b8ae; --warn:#d6b98f; --late:#e0959f; --on-accent:#0e0e0f; color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#1d1a24; --surface:#26222f; --sunken:#2e2939; --line:#3a3446;
-  --fg:#f1e9f2; --muted:#a99db0;
-  --pink:#a65f80; --pink-strong:#f0a3c4; --pink-soft:#3a2836;
-  --blue:#4f7aa0; --blue-strong:#94c6ec; --blue-soft:#24324a;
-  --mint:#4c8a70; --lav:#7563a0; --peach:#a5735a;
-  --done:#86cdac; --warn:#f0b878; --late:#ef8ba0; color-scheme:dark}
+  --bg:#0e0e0f; --surface:#18181a; --sunken:#222225; --line:#2c2c30;
+  --fg:#ececee; --muted:#96969c;
+  --pink:#3a3a3f; --pink-strong:#d6d6da; --pink-soft:#2a2a2e;
+  --blue:#5a5a61; --blue-strong:#b4b4ba; --blue-soft:#2a2a2e;
+  --mint:#7c7c84; --lav:#9c9ca3; --peach:#c4c4ca;
+  --done:#a8b8ae; --warn:#d6b98f; --late:#e0959f; --on-accent:#0e0e0f; color-scheme:dark}
 
 *{box-sizing:border-box}
 html,body{min-height:100%;margin:0}
-body{background:var(--bg);color:var(--fg);font-family:var(--font);font-size:15px;line-height:1.5;font-weight:400}
+body{background:var(--bg);color:var(--fg);font-family:var(--font);font-size:15px;line-height:1.5;font-weight:400;transition:background .2s}
 button,input,select{font:inherit;color:inherit}
 button{cursor:pointer}
 :focus-visible{outline:2px solid var(--blue-strong);outline-offset:2px;border-radius:8px}
@@ -48,18 +50,27 @@ button{cursor:pointer}
 /* rail */
 .rail{display:flex;flex-direction:column;gap:6px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 20px);align-self:start}
 .brand{display:flex;align-items:center;gap:10px;font-weight:600;font-size:17px;padding:0 8px 14px}
-.brand i{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--pink) 50%,var(--blue) 50%);display:block}
+.brand i{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--pink) 50%,var(--blue) 50%);display:block;flex:none}
 .rail-label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:12px 10px 4px}
 .pj{display:flex;align-items:center;gap:10px;width:100%;padding:9px 10px;border:0;background:none;border-radius:11px;text-align:left}
 .pj:hover{background:var(--sunken)}
-.pj.on{background:var(--surface);box-shadow:0 1px 0 var(--line),0 0 0 1px var(--line)}
+.pj.on{background:var(--surface);box-shadow:0 0 0 1px var(--line)}
 .pj .dot{width:10px;height:10px;border-radius:50%;flex:none}
 .pj .nm{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pj .pc{font-size:12px;color:var(--muted)}
 .new-pj{display:flex;gap:6px;padding:6px 4px 0}
 .new-pj input{flex:1;min-width:0;border:1px dashed var(--line);background:transparent;border-radius:10px;padding:8px 10px;font-size:14px}
 .new-pj input:focus{border-style:solid;border-color:var(--pink-strong);outline:none}
-.sync{font-size:12px;color:var(--muted);padding:14px 10px 0}
+.rail-foot{display:flex;flex-direction:column;gap:10px;padding:18px 6px 0;margin-top:8px;border-top:1px solid var(--line)}
+.who{display:flex;align-items:center;gap:8px;font-size:13px}
+.who .av{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-weight:600;font-size:12px;background:var(--pink);flex:none}
+.who .nm{flex:1;min-width:0}
+.who button{border:0;background:none;color:var(--muted);font-size:12px;padding:4px 6px;border-radius:7px}
+.who button:hover{color:var(--fg);background:var(--sunken)}
+.theme{display:flex;background:var(--sunken);border-radius:10px;padding:3px}
+.theme button{flex:1;border:0;background:none;padding:5px 10px;border-radius:8px;font-size:12px;color:var(--muted)}
+.theme button.on{background:var(--surface);color:var(--fg);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.sync{font-size:12px;color:var(--muted)}
 
 /* main */
 main{min-width:0;display:flex;flex-direction:column;gap:22px}
@@ -89,7 +100,7 @@ main{min-width:0;display:flex;flex-direction:column;gap:22px}
 .add input:focus{outline:none}
 .add:focus-within{border-color:var(--pink-strong)}
 .add button{border:0;background:var(--pink);padding:0 18px;font-weight:500}
-.add button:hover{background:var(--pink-strong);color:#fff}
+.add button:hover{background:var(--pink-strong);color:var(--on-accent)}
 .tabs{display:flex;background:var(--sunken);border-radius:12px;padding:3px}
 .tabs button{border:0;background:none;padding:7px 12px;border-radius:9px;font-size:13px;color:var(--muted)}
 .tabs button.on{background:var(--surface);color:var(--fg);box-shadow:0 1px 2px rgba(0,0,0,.06)}
@@ -102,7 +113,7 @@ main{min-width:0;display:flex;flex-direction:column;gap:22px}
 .chk{width:22px;height:22px;flex:none;border-radius:50%;border:2px solid var(--blue-strong);background:none;display:grid;place-items:center;padding:0}
 .chk.half{background:conic-gradient(var(--blue) var(--p),transparent 0)}
 .chk.on{background:var(--done);border-color:var(--done)}
-.chk.on::after{content:"";width:9px;height:5px;border:2px solid #fff;border-top:0;border-right:0;transform:translateY(-1px) rotate(-45deg)}
+.chk.on::after{content:"";width:9px;height:5px;border:2px solid var(--on-accent);border-top:0;border-right:0;transform:translateY(-1px) rotate(-45deg)}
 .t-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
 .t-title{border:0;background:none;padding:0;width:100%;font-weight:500}
 .t-title:focus{outline:none;box-shadow:0 1px 0 var(--pink)}
@@ -157,6 +168,25 @@ main{min-width:0;display:flex;flex-direction:column;gap:22px}
 .empty b{color:var(--fg);font-weight:500}
 .note{font-size:13px;color:var(--warn)}
 
+/* login */
+.login{min-height:100vh;min-height:100dvh;display:grid;place-items:center;padding-block:32px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.login form{width:100%;max-width:360px;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:18px}
+.login h1{margin:0;font-size:22px;font-weight:600;display:flex;align-items:center;gap:10px}
+.login p{margin:0;color:var(--muted);font-size:14px}
+.people{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.person{display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 8px;border:1.5px solid var(--line);border-radius:14px;background:var(--bg)}
+.person .av{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-weight:600;font-size:18px}
+.person.on{border-color:var(--pink-strong);background:var(--pink-soft)}
+.login label{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--muted)}
+.login input[type=password]{border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:11px 12px;font-size:15px}
+.login input[type=password]:focus{outline:none;border-color:var(--pink-strong)}
+.login .go{border:0;background:var(--pink);border-radius:12px;padding:12px;font-weight:600}
+.login .go:hover{background:var(--pink-strong);color:var(--on-accent)}
+.login .go:disabled{opacity:.6;cursor:wait}
+.login .err{color:var(--late);font-size:13px;min-height:1em}
+.login .theme{align-self:center}
+
 @media (max-width:760px){
   .app{grid-template-columns:minmax(0,1fr);gap:18px;padding-block:16px 40px}
   .rail{position:static;flex-direction:row;overflow-x:auto;gap:6px;padding-bottom:4px;align-items:center}
@@ -166,6 +196,8 @@ main{min-width:0;display:flex;flex-direction:column;gap:22px}
   .pj .pc{display:none}
   .new-pj{padding:0;flex:none}
   .new-pj input{width:130px}
+  .rail-foot{flex-direction:row;align-items:center;border:0;margin:0;padding:0;flex:none}
+  .who .nm{display:none}
   .detail{padding-left:14px}
   .head h1{font-size:22px}
 }
@@ -173,21 +205,36 @@ main{min-width:0;display:flex;flex-direction:column;gap:22px}
 </style>
 </head>
 <body>
+<div id="root"></div>
 
-<div class="app">
-  <nav class="rail" id="rail" aria-label="Dự án"></nav>
-  <main id="main"></main>
-</div>
+<script type="module">
+import {FIREBASE_CONFIG, ACCOUNTS} from "./firebase-config.js";
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {initializeFirestore,persistentLocalCache,collection,doc,setDoc,deleteDoc,onSnapshot} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-<script>
 const COLORS={pink:"var(--pink)",blue:"var(--blue)",mint:"var(--mint)",lav:"var(--lav)",peach:"var(--peach)"};
 const STATUS={todo:"Chưa làm",doing:"Đang làm",done:"Xong"};
-const LS="pastel-task-tracker-v1";
 const uid=()=>Math.random().toString(36).slice(2,10);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const root=document.getElementById("root");
 
-const S={projects:{},view:"overview",filter:"all",open:new Set(),mode:"loading",readOnly:false,note:"",armed:null,refocus:null};
-let db=null;
+const S={projects:{},view:"overview",filter:"all",open:new Set(),mode:"auth",note:"",armed:null,refocus:null,user:null,pick:Object.keys(ACCOUNTS)[0],loginErr:"",busy:false};
+let auth=null,fs=null,unsub=null;
+
+/* ---------- theme ---------- */
+function currentTheme(){
+  const t=document.documentElement.dataset.theme;
+  return t||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");
+}
+function setTheme(t){
+  document.documentElement.dataset.theme=t;
+  try{localStorage.setItem("tp-theme",t)}catch(e){}
+  render();
+}
+const themeHtml=()=>{const t=currentTheme();return `<div class="theme" role="group" aria-label="Giao diện">
+  <button type="button" class="${t==="light"?"on":""}" data-theme-set="light">Sáng</button>
+  <button type="button" class="${t==="dark"?"on":""}" data-theme-set="dark">Tối</button></div>`};
 
 /* ---------- progress ---------- */
 function taskPct(t){
@@ -217,36 +264,32 @@ const sorted=()=>Object.values(S.projects).sort((a,b)=>(a.order??0)-(b.order??0)
 
 /* ---------- persistence ---------- */
 const pending=new Map(), saving=new Set();
+const projRef=pid=>doc(fs,"users",S.user.uid,"projects",pid);
 function scheduleSave(pid){
   clearTimeout(pending.get(pid));
   pending.set(pid,setTimeout(()=>flush(pid),350));
 }
 async function flush(pid){
   pending.delete(pid);
-  if(S.mode==="local"){saveLocal();return}
+  if(!S.user)return;
   if(saving.has(pid)){scheduleSave(pid);return}
   saving.add(pid);
   try{
     const p=S.projects[pid];
-    const ref=db.collection("projects").doc(pid);
-    if(p) await ref.set(stripId(p)); else await ref.delete();
+    if(p) await setDoc(projRef(pid),stripId(p)); else await deleteDoc(projRef(pid));
   }catch(e){
-    if(e&&e.code==="invalid_argument"){S.readOnly=true;S.note="Bạn chỉ có quyền xem trang này."}
-    else S.note=e&&e.code==="quota_exceeded"?"Bộ nhớ đã đầy, hãy xoá bớt dự án cũ.":"Chưa lưu được, sẽ thử lại khi bạn sửa tiếp.";
+    S.note=e&&e.code==="permission-denied"?"Không có quyền lưu. Hãy đăng nhập lại.":"Chưa lưu được, sẽ thử lại khi bạn sửa tiếp.";
     render();
   }finally{saving.delete(pid)}
 }
 const stripId=p=>{const {id,...rest}=p;return JSON.parse(JSON.stringify(rest))};
-function saveLocal(){try{localStorage.setItem(LS,JSON.stringify(S.projects))}catch(e){}}
-function loadLocal(){try{return JSON.parse(localStorage.getItem(LS)||"null")}catch(e){return null}}
 
 function mutate(pid,fn){
-  if(S.readOnly)return;
   const p=structuredClone(S.projects[pid]);fn(p);p.updatedAt=Date.now();
   S.projects[pid]=p;render();scheduleSave(pid);
 }
 function createProject(name){
-  if(S.readOnly||!name.trim())return;
+  if(!name.trim())return;
   const id=uid(),keys=Object.keys(COLORS);
   const order=Math.max(0,...Object.values(S.projects).map(p=>p.order??0))+1;
   S.projects[id]={id,name:name.trim(),color:keys[Object.keys(S.projects).length%keys.length],order,tasks:[],createdAt:Date.now()};
@@ -259,20 +302,46 @@ function render(){
   const ae=document.activeElement;
   const keep=ae&&ae.dataset&&ae.dataset.keep?ae.dataset.keep:null;
   const caret=keep&&ae.selectionStart!=null?[ae.value,ae.selectionStart]:null;
-  renderRail();renderMain();
+  if(S.mode==="auth"||S.mode==="login")renderLogin();
+  else{
+    if(!document.getElementById("rail"))root.innerHTML=`<div class="app"><nav class="rail" id="rail" aria-label="Dự án"></nav><main id="main"></main></div>`;
+    renderRail();renderMain();
+  }
   const target=S.refocus?document.querySelector(S.refocus):keep?document.querySelector(`[data-keep="${keep}"]`):null;
   if(target){target.focus();if(caret&&!S.refocus&&target.value===caret[0])try{target.setSelectionRange(caret[1],caret[1])}catch(e){}}
   S.refocus=null;
 }
+const initial=n=>esc(String(n).slice(0,1).toUpperCase());
+const avatarBg=n=>n===Object.keys(ACCOUNTS)[1]?"var(--blue)":"var(--pink)";
+function renderLogin(){
+  if(S.mode==="auth"){root.innerHTML=`<div class="login"><div class="empty"><b>Đang mở…</b></div></div>`;return}
+  const pwd=document.getElementById("pwd");const keepPwd=pwd?pwd.value:"";
+  root.innerHTML=`<div class="login"><form id="loginForm">
+    <h1><span class="brand" style="padding:0"><i></i></span>Task Pastel</h1>
+    <p>Chọn tài khoản của bạn và nhập mật khẩu.</p>
+    <div class="people" role="radiogroup" aria-label="Tài khoản">${Object.keys(ACCOUNTS).map(n=>`
+      <button type="button" class="person ${S.pick===n?"on":""}" data-pick="${esc(n)}" role="radio" aria-checked="${S.pick===n}">
+        <span class="av" style="background:${avatarBg(n)}">${initial(n)}</span>${esc(n)}</button>`).join("")}</div>
+    <label>Mật khẩu<input type="password" id="pwd" data-keep="pwd" autocomplete="current-password" required></label>
+    <div class="err" role="alert">${esc(S.loginErr)}</div>
+    <button class="go" type="submit" ${S.busy?"disabled":""}>${S.busy?"Đang đăng nhập…":"Đăng nhập"}</button>
+    ${themeHtml()}
+  </form></div>`;
+  document.getElementById("pwd").value=keepPwd;
+}
 function renderRail(){
-  const ps=sorted();
+  const ps=sorted(),name=S.user?.name||"";
   document.getElementById("rail").innerHTML=`
     <div class="brand"><i></i><span>Task Pastel</span></div>
     <button class="pj ${S.view==="overview"?"on":""}" data-go="overview"><span class="dot" style="background:linear-gradient(135deg,var(--pink) 50%,var(--blue) 50%)"></span><span class="nm">Tổng quan</span></button>
     <div class="rail-label">Dự án</div>
     ${ps.map(p=>`<button class="pj ${S.view===p.id?"on":""}" data-go="${p.id}"><span class="dot" style="background:${COLORS[p.color]||COLORS.pink}"></span><span class="nm">${esc(p.name)}</span><span class="pc num">${projStats(p).pct}%</span></button>`).join("")}
-    ${S.readOnly?"":`<form class="new-pj" id="newPj"><input id="newPjName" data-keep="newpj" placeholder="+ Dự án mới" aria-label="Tên dự án mới" autocomplete="off"></form>`}
-    <div class="sync">${S.mode==="db"?"Đã đồng bộ tự động":S.mode==="local"?"Đang lưu trên trình duyệt này":"Đang tải…"}</div>`;
+    <form class="new-pj" id="newPj"><input id="newPjName" data-keep="newpj" placeholder="+ Dự án mới" aria-label="Tên dự án mới" autocomplete="off"></form>
+    <div class="rail-foot">
+      <div class="who"><span class="av" style="background:${avatarBg(name)}">${initial(name)}</span><span class="nm">${esc(name)}</span><button data-logout>Đăng xuất</button></div>
+      ${themeHtml()}
+      <div class="sync">${S.mode==="ready"?"Đã đồng bộ, dùng được trên mọi máy":"Đang tải…"}</div>
+    </div>`;
 }
 function renderMain(){
   const m=document.getElementById("main");
@@ -282,7 +351,7 @@ function renderMain(){
 }
 function overview(){
   const ps=sorted();
-  if(!ps.length)return `<div class="head"><div class="head-top"><h1>Tổng quan</h1></div></div>
+  if(!ps.length)return `<div class="head"><div class="head-top"><h1>Chào ${esc(S.user?.name||"")}</h1></div></div>
     <div class="empty"><b>Chưa có dự án nào</b><span>Gõ tên dự án vào ô “+ Dự án mới” ở thanh bên rồi nhấn Enter để bắt đầu.</span></div>`;
   let all={todo:0,doing:0,done:0,total:0},sum=0;
   ps.forEach(p=>{const s=projStats(p);all.todo+=s.todo;all.doing+=s.doing;all.done+=s.done;all.total+=s.total;sum+=(p.tasks||[]).reduce((a,t)=>a+taskPct(t),0)});
@@ -299,62 +368,62 @@ function overview(){
         ${countsHtml(s)}</button>`}).join("")}</div>
     ${upcoming.length?`<div class="sec-title">Sắp đến hạn</div><div class="due-list">${upcoming.map(({p,t,d})=>`<button data-go="${p.id}" data-openTask="${t.id}">
         <span class="dot" style="width:8px;height:8px;border-radius:50%;background:${COLORS[p.color]}"></span>
-        <span class="nm">${esc(t.title)} <small>· ${esc(p.name)}</small></span><small class="${d.cls}" style="${d.cls?`color:var(--${d.cls==="late"?"late":"warn"})`:""}">${d.text}</small></button>`).join("")}</div>`:""}`;
+        <span class="nm">${esc(t.title)} <small>· ${esc(p.name)}</small></span><small style="${d.cls?`color:var(--${d.cls==="late"?"late":"warn"})`:""}">${d.text}</small></button>`).join("")}</div>`:""}`;
 }
 function countsHtml(s){
   return `<div class="counts num"><span><i style="background:var(--muted)"></i>${s.todo} chưa làm</span><span><i style="background:var(--blue-strong)"></i>${s.doing} đang làm</span><span><i style="background:var(--done)"></i>${s.done} xong</span></div>`;
 }
 function projectView(p){
-  const s=projStats(p),ro=S.readOnly;
+  const s=projStats(p);
   let ts=(p.tasks||[]).map((t,i)=>({t,i}));
   if(S.filter!=="all")ts=ts.filter(x=>(x.t.status||"todo")===S.filter);
   ts.sort((a,b)=>(a.t.status==="done")-(b.t.status==="done")||(b.t.priority==="high")-(a.t.priority==="high")||a.i-b.i);
   const tabs=[["all","Tất cả",s.total],["todo","Chưa làm",s.todo],["doing","Đang làm",s.doing],["done","Xong",s.done]];
   return `<div class="head">
       <div class="head-top">
-        <h1><input id="pjName" data-keep="pjname" value="${esc(p.name)}" aria-label="Tên dự án" ${ro?"readonly":""}></h1>
-        ${ro?"":`<div class="swatches">${Object.keys(COLORS).map(k=>`<button class="sw ${p.color===k?"on":""}" style="background:${COLORS[k]}" data-color="${k}" aria-label="Màu ${k}"></button>`).join("")}</div>
-        <button class="ghost ${S.armed==="pj"?"danger":""}" data-delpj>${S.armed==="pj"?"Bấm lần nữa để xoá":"Xoá dự án"}</button>`}
+        <h1><input id="pjName" data-keep="pjname" value="${esc(p.name)}" aria-label="Tên dự án"></h1>
+        <div class="swatches">${Object.keys(COLORS).map(k=>`<button class="sw ${p.color===k?"on":""}" style="background:${COLORS[k]}" data-color="${k}" aria-label="Màu ${k}"></button>`).join("")}</div>
+        <button class="ghost ${S.armed==="pj"?"danger":""}" data-delpj>${S.armed==="pj"?"Bấm lần nữa để xoá":"Xoá dự án"}</button>
       </div>
       <div class="meter"><div class="bar"><span style="width:${s.pct}%"></span></div><b class="num">${s.pct}%</b></div>
       ${countsHtml(s)}
     </div>
     <div class="tools">
-      ${ro?"":`<form class="add" id="addTask"><input id="newTask" data-keep="newtask" placeholder="Thêm task mới…" autocomplete="off" aria-label="Task mới"><button type="submit">Thêm</button></form>`}
+      <form class="add" id="addTask"><input id="newTask" data-keep="newtask" placeholder="Thêm task mới…" autocomplete="off" aria-label="Task mới"><button type="submit">Thêm</button></form>
       <div class="tabs" role="tablist">${tabs.map(([k,l,n])=>`<button class="${S.filter===k?"on":""}" data-filter="${k}">${l} <span class="num">${n}</span></button>`).join("")}</div>
     </div>
     <div class="list">${ts.length?ts.map(x=>taskHtml(x.t)).join(""):
       `<div class="empty"><b>${s.total?"Không có task ở mục này":"Dự án chưa có task"}</b><span>${s.total?"Đổi bộ lọc để xem các task khác.":"Gõ vào ô “Thêm task mới” rồi nhấn Enter."}</span></div>`}</div>`;
 }
 function taskHtml(t){
-  const subs=t.subtasks||[],nd=subs.filter(x=>x.done).length,pct=taskPct(t),open=S.open.has(t.id),d=dueInfo(t.due,t.status),ro=S.readOnly?"disabled":"";
+  const subs=t.subtasks||[],nd=subs.filter(x=>x.done).length,pct=taskPct(t),open=S.open.has(t.id),d=dueInfo(t.due,t.status);
   const st=t.status||"todo";
   return `<div class="task ${st==="done"?"done":""} ${open?"open":""}" data-task="${t.id}">
     <div class="row">
-      <button class="chk ${st==="done"?"on":pct>0?"half":""}" style="--p:${Math.round(pct*100)}%" data-toggle aria-label="Đánh dấu xong" ${ro}></button>
+      <button class="chk ${st==="done"?"on":pct>0?"half":""}" style="--p:${Math.round(pct*100)}%" data-toggle aria-label="Đánh dấu xong"></button>
       <div class="t-main">
-        <input class="t-title" data-keep="tt-${t.id}" data-field="title" value="${esc(t.title)}" aria-label="Tên task" ${S.readOnly?"readonly":""}>
+        <input class="t-title" data-keep="tt-${t.id}" data-field="title" value="${esc(t.title)}" aria-label="Tên task">
         <div class="meta num">
           ${t.priority==="high"?`<span class="prio high">ƯU TIÊN</span>`:""}
           ${subs.length?`<span><span class="mini"><span style="width:${nd/subs.length*100}%"></span></span> ${nd}/${subs.length}</span>`:""}
           ${d?`<span class="${d.cls}">${d.text}</span>`:""}
         </div>
       </div>
-      <select class="pill ${st}" data-field="status" aria-label="Trạng thái" ${ro}>${Object.entries(STATUS).map(([k,l])=>`<option value="${k}" ${st===k?"selected":""}>${l}</option>`).join("")}</select>
+      <select class="pill ${st}" data-field="status" aria-label="Trạng thái">${Object.entries(STATUS).map(([k,l])=>`<option value="${k}" ${st===k?"selected":""}>${l}</option>`).join("")}</select>
       <button class="exp" data-expand aria-label="Mở chi tiết" aria-expanded="${open}">›</button>
     </div>
     ${open?`<div class="detail">
       <div class="fields">
-        <label>Hạn <input type="date" data-field="due" value="${esc(t.due||"")}" ${ro}></label>
-        <label>Ưu tiên <select data-field="priority" ${ro}><option value="normal">Bình thường</option><option value="high" ${t.priority==="high"?"selected":""}>Cao</option></select></label>
+        <label>Hạn <input type="date" data-field="due" value="${esc(t.due||"")}"></label>
+        <label>Ưu tiên <select data-field="priority"><option value="normal">Bình thường</option><option value="high" ${t.priority==="high"?"selected":""}>Cao</option></select></label>
       </div>
       <div class="subs">${subs.map(x=>`<div class="sub ${x.done?"done":""}" data-sub="${x.id}">
-          <input type="checkbox" ${x.done?"checked":""} data-subtoggle aria-label="Xong subtask" ${ro}>
-          <input class="s-title" data-keep="st-${x.id}" value="${esc(x.title)}" data-subtitle aria-label="Tên subtask" ${S.readOnly?"readonly":""}>
-          ${S.readOnly?"":`<button class="x" data-subdel aria-label="Xoá subtask">✕</button>`}
+          <input type="checkbox" ${x.done?"checked":""} data-subtoggle aria-label="Xong subtask">
+          <input class="s-title" data-keep="st-${x.id}" value="${esc(x.title)}" data-subtitle aria-label="Tên subtask">
+          <button class="x" data-subdel aria-label="Xoá subtask">✕</button>
         </div>`).join("")}</div>
-      ${S.readOnly?"":`<form class="sub-add" data-subadd><input id="sa-${t.id}" data-keep="sa-${t.id}" placeholder="+ Thêm subtask, nhấn Enter" autocomplete="off" aria-label="Subtask mới"></form>
-      <div class="d-foot"><button class="ghost ${S.armed===t.id?"danger":""}" data-deltask>${S.armed===t.id?"Bấm lần nữa để xoá":"Xoá task"}</button></div>`}
+      <form class="sub-add" data-subadd><input id="sa-${t.id}" data-keep="sa-${t.id}" placeholder="+ Thêm subtask, nhấn Enter" autocomplete="off" aria-label="Subtask mới"></form>
+      <div class="d-foot"><button class="ghost ${S.armed===t.id?"danger":""}" data-deltask>${S.armed===t.id?"Bấm lần nữa để xoá":"Xoá task"}</button></div>
     </div>`:""}
   </div>`;
 }
@@ -370,6 +439,9 @@ function syncStatusFromSubs(t){
 }
 document.addEventListener("click",e=>{
   const el=e.target.closest("button");if(!el)return;
+  if(el.dataset.themeSet){setTheme(el.dataset.themeSet);return}
+  if(el.dataset.pick){S.pick=el.dataset.pick;S.loginErr="";S.refocus="#pwd";render();return}
+  if("logout" in el.dataset){(async()=>{const ids=[...pending.keys()];ids.forEach(id=>clearTimeout(pending.get(id)));await Promise.all(ids.map(flush));signOut(auth)})();return}
   const go=el.dataset.go;
   if(go){S.view=go;S.filter="all";S.armed=null;if(el.dataset.opentask)S.open.add(el.dataset.opentask);render();return}
   if(el.dataset.filter){S.filter=el.dataset.filter;render();return}
@@ -381,8 +453,24 @@ document.addEventListener("click",e=>{
   if("deltask" in el.dataset){if(S.armed===tid){S.armed=null;S.open.delete(tid);mutate(pid,p=>p.tasks=p.tasks.filter(t=>t.id!==tid))}else{S.armed=tid;render()}return}
   if("subdel" in el.dataset){const sid=el.closest("[data-sub]").dataset.sub;mutate(pid,p=>{const t=findTask(p,tid);t.subtasks=t.subtasks.filter(s=>s.id!==sid);syncStatusFromSubs(t)});return}
 });
-document.addEventListener("submit",e=>{
+document.addEventListener("submit",async e=>{
   e.preventDefault();const f=e.target;
+  if(f.id==="loginForm"){
+    const pwd=document.getElementById("pwd").value;
+    if(!pwd||S.busy)return;
+    S.busy=true;S.loginErr="";render();
+    try{await signInWithEmailAndPassword(auth,ACCOUNTS[S.pick],pwd)}
+    catch(err){
+      const c=err&&err.code||"";
+      S.loginErr=c.includes("invalid-credential")||c.includes("wrong-password")||c.includes("user-not-found")?"Sai mật khẩu. Hãy thử lại."
+        :c.includes("too-many-requests")?"Nhập sai quá nhiều lần. Đợi vài phút rồi thử lại."
+        :c.includes("network")?"Không có mạng. Kiểm tra kết nối rồi thử lại."
+        :"Chưa đăng nhập được ("+c+").";
+      S.busy=false;S.refocus="#pwd";render();
+      const p=document.getElementById("pwd");if(p)p.value="";
+    }
+    return;
+  }
   if(f.id==="newPj"){const i=f.querySelector("input");const v=i.value;i.value="";createProject(v);return}
   if(f.id==="addTask"){const i=f.querySelector("input"),v=i.value.trim();if(!v)return;i.value="";S.filter=S.filter==="done"?"all":S.filter;
     S.refocus="#newTask";mutate(S.view,p=>p.tasks.unshift({id:uid(),title:v,status:"todo",priority:"normal",due:"",subtasks:[],createdAt:Date.now()}));return}
@@ -391,6 +479,7 @@ document.addEventListener("submit",e=>{
 });
 document.addEventListener("change",e=>{
   const el=e.target,pid=S.view;
+  if(!S.user)return;
   if(el.id==="pjName"){const v=el.value.trim();if(v)mutate(pid,p=>p.name=v);else render();return}
   const taskEl=el.closest("[data-task]");if(!taskEl)return;const tid=taskEl.dataset.task;
   if("subtoggle" in el.dataset){const sid=el.closest("[data-sub]").dataset.sub;mutate(pid,p=>{const t=findTask(p,tid);const s=t.subtasks.find(x=>x.id===sid);s.done=el.checked;syncStatusFromSubs(t)});return}
@@ -400,30 +489,41 @@ document.addEventListener("change",e=>{
   mutate(pid,p=>{const t=findTask(p,tid);t[f]=v;if(f==="status"&&v==="done")(t.subtasks||[]).forEach(s=>s.done=true)});
 });
 document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.matches(".t-title,.s-title,#pjName"))e.target.blur()});
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>{if(!document.documentElement.dataset.theme)render()});
 
 /* ---------- boot ---------- */
-render();
-(async()=>{
-  db=window.claude&&window.claude.use?await window.claude.use("db").catch(()=>null):null;
-  if(!db){
-    S.mode="local";S.projects=loadLocal()||{};
-    Object.entries(S.projects).forEach(([id,p])=>p.id=id);
-    render();return;
-  }
-  try{const user=await window.claude.use("user");if(user&&typeof user.can==="function"){const ok=await user.can("data.write");if(ok===false)S.readOnly=true}}catch(e){}
-  const timer=setTimeout(()=>{S.note="Chưa kết nối được dữ liệu, có thể đang hiển thị bản cũ.";if(S.mode==="loading")S.mode="db";render()},10000);
-  db.collection("projects").onSnapshot(snap=>{
+function startData(user){
+  const name=Object.keys(ACCOUNTS).find(n=>ACCOUNTS[n].toLowerCase()===String(user.email).toLowerCase())||user.email;
+  S.user={uid:user.uid,name};S.mode="loading";S.projects={};S.view="overview";S.note="";
+  root.innerHTML="";render();
+  const timer=setTimeout(()=>{if(S.mode==="loading"){S.mode="ready";S.note="Chưa kết nối được máy chủ, đang hiển thị bản lưu trên máy.";render()}},10000);
+  unsub=onSnapshot(collection(fs,"users",user.uid,"projects"),{includeMetadataChanges:false},snap=>{
     if(!snap.metadata.fromCache){clearTimeout(timer);if(S.note.startsWith("Chưa kết nối"))S.note=""}
     const next={};
-    snap.docs.forEach(d=>{next[d.id]={...structuredClone(d.data()),id:d.id}});
+    snap.docs.forEach(d=>{next[d.id]={...d.data(),id:d.id}});
     for(const id of [...pending.keys(),...saving]){if(S.projects[id])next[id]=S.projects[id];else delete next[id]}
-    S.projects=next;S.mode="db";
+    S.projects=next;S.mode="ready";
     if(S.view!=="overview"&&!S.projects[S.view])S.view="overview";
     const ae=document.activeElement;
     if(ae&&ae.matches&&ae.matches(".t-title,.s-title,#pjName")&&ae.value!==ae.defaultValue)return;
     render();
-  },err=>{clearTimeout(timer);S.mode="db";S.note="Mất kết nối dữ liệu. Tải lại trang để thử lại.";render()});
-})();
+  },err=>{clearTimeout(timer);S.mode="ready";S.note="Mất kết nối dữ liệu ("+(err.code||"lỗi")+"). Tải lại trang để thử lại.";render()});
+}
+render();
+if(!FIREBASE_CONFIG||!FIREBASE_CONFIG.apiKey){
+  root.innerHTML=`<div class="login"><div class="empty"><b>Trang chưa được kết nối Firebase</b><span>Điền cấu hình vào file firebase-config.js theo hướng dẫn trong README.</span></div></div>`;
+}else{
+  const app=initializeApp(FIREBASE_CONFIG);
+  auth=getAuth(app);
+  fs=initializeFirestore(app,{localCache:persistentLocalCache()});
+  onAuthStateChanged(auth,user=>{
+    if(unsub){unsub();unsub=null}
+    pending.forEach(t=>clearTimeout(t));pending.clear();
+    S.busy=false;
+    if(user){startData(user)}
+    else{S.user=null;S.projects={};S.open.clear();S.mode="login";S.loginErr="";root.innerHTML="";S.refocus="#pwd";render()}
+  });
+}
 </script>
 </body>
 </html>
