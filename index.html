@@ -16,25 +16,25 @@
   --pink:#f6bfd6; --pink-strong:#e28bb0; --pink-soft:#fde8f1;
   --blue:#bcdcf4; --blue-strong:#6fa9d6; --blue-soft:#e6f2fc;
   --mint:#c4ead8; --lav:#dccff3; --peach:#fbd9c4;
-  --done:#74b99a; --warn:#e3a35c; --late:#d9677f; --on-accent:#ffffff;
+  --done:#74b99a; --warn:#e3a35c; --late:#d9677f; --on-accent:#ffffff; --on-pink:#3b2f3a;
   --font:"Lexend",system-ui,-apple-system,"Segoe UI",sans-serif;
   --r:14px;
 }
-/* Dark: plain black and greys */
+/* Dark: soft charcoal with dimmed pastel accents */
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#0e0e0f; --surface:#18181a; --sunken:#222225; --line:#2c2c30;
-  --fg:#ececee; --muted:#96969c;
-  --pink:#3a3a3f; --pink-strong:#d6d6da; --pink-soft:#2a2a2e;
-  --blue:#5a5a61; --blue-strong:#b4b4ba; --blue-soft:#2a2a2e;
-  --mint:#7c7c84; --lav:#9c9ca3; --peach:#c4c4ca;
-  --done:#a8b8ae; --warn:#d6b98f; --late:#e0959f; --on-accent:#0e0e0f; color-scheme:dark}}
+  --bg:#1e1f26; --surface:#272832; --sunken:#30313c; --line:#3c3d4a;
+  --fg:#eeedf4; --muted:#a8a7b6;
+  --pink:#e2a7c2; --pink-strong:#f2bcd4; --pink-soft:#3b2d37;
+  --blue:#93bde3; --blue-strong:#abd0f2; --blue-soft:#263548;
+  --mint:#93cdb3; --lav:#baa9e3; --peach:#e8b797;
+  --done:#93cdb3; --warn:#ebc08a; --late:#f19aad; --on-accent:#1e1f26; --on-pink:#1e1f26; color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#0e0e0f; --surface:#18181a; --sunken:#222225; --line:#2c2c30;
-  --fg:#ececee; --muted:#96969c;
-  --pink:#3a3a3f; --pink-strong:#d6d6da; --pink-soft:#2a2a2e;
-  --blue:#5a5a61; --blue-strong:#b4b4ba; --blue-soft:#2a2a2e;
-  --mint:#7c7c84; --lav:#9c9ca3; --peach:#c4c4ca;
-  --done:#a8b8ae; --warn:#d6b98f; --late:#e0959f; --on-accent:#0e0e0f; color-scheme:dark}
+  --bg:#1e1f26; --surface:#272832; --sunken:#30313c; --line:#3c3d4a;
+  --fg:#eeedf4; --muted:#a8a7b6;
+  --pink:#e2a7c2; --pink-strong:#f2bcd4; --pink-soft:#3b2d37;
+  --blue:#93bde3; --blue-strong:#abd0f2; --blue-soft:#263548;
+  --mint:#93cdb3; --lav:#baa9e3; --peach:#e8b797;
+  --done:#93cdb3; --warn:#ebc08a; --late:#f19aad; --on-accent:#1e1f26; --on-pink:#1e1f26; color-scheme:dark}
 
 *{box-sizing:border-box}
 html,body{min-height:100%;margin:0}
@@ -63,7 +63,7 @@ button{cursor:pointer}
 .new-pj input:focus{border-style:solid;border-color:var(--pink-strong);outline:none}
 .rail-foot{display:flex;flex-direction:column;gap:10px;padding:18px 6px 0;margin-top:8px;border-top:1px solid var(--line)}
 .who{display:flex;align-items:center;gap:8px;font-size:13px}
-.who .av{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-weight:600;font-size:12px;background:var(--pink);flex:none}
+.who .av{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-weight:600;font-size:12px;background:var(--pink);color:var(--on-pink);flex:none}
 .who .nm{flex:1;min-width:0}
 .who button{border:0;background:none;color:var(--muted);font-size:12px;padding:4px 6px;border-radius:7px}
 .who button:hover{color:var(--fg);background:var(--sunken)}
@@ -99,7 +99,7 @@ main{min-width:0;display:flex;flex-direction:column;gap:22px}
 .add input{flex:1;min-width:0;border:0;background:none;padding:12px 14px}
 .add input:focus{outline:none}
 .add:focus-within{border-color:var(--pink-strong)}
-.add button{border:0;background:var(--pink);padding:0 18px;font-weight:500}
+.add button{border:0;background:var(--pink);color:var(--on-pink);padding:0 18px;font-weight:500}
 .add button:hover{background:var(--pink-strong);color:var(--on-accent)}
 .tabs{display:flex;background:var(--sunken);border-radius:12px;padding:3px}
 .tabs button{border:0;background:none;padding:7px 12px;border-radius:9px;font-size:13px;color:var(--muted)}
@@ -109,14 +109,14 @@ main{min-width:0;display:flex;flex-direction:column;gap:22px}
 .list{display:flex;flex-direction:column;gap:8px}
 .task{background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
 .task.done .t-title{text-decoration:line-through;color:var(--muted)}
-.row{display:flex;align-items:center;gap:12px;padding:12px 14px}
+.row{display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer;border-radius:var(--r)}
+.row:hover{background:color-mix(in srgb,var(--sunken) 55%,transparent)}
 .chk{width:22px;height:22px;flex:none;border-radius:50%;border:2px solid var(--blue-strong);background:none;display:grid;place-items:center;padding:0}
 .chk.half{background:conic-gradient(var(--blue) var(--p),transparent 0)}
 .chk.on{background:var(--done);border-color:var(--done)}
 .chk.on::after{content:"";width:9px;height:5px;border:2px solid var(--on-accent);border-top:0;border-right:0;transform:translateY(-1px) rotate(-45deg)}
-.t-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
-.t-title{border:0;background:none;padding:0;width:100%;font-weight:500}
-.t-title:focus{outline:none;box-shadow:0 1px 0 var(--pink)}
+.t-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;border-radius:8px}
+.t-title{font-weight:500;overflow-wrap:anywhere}
 .meta{display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-size:12px;color:var(--muted)}
 .meta .late{color:var(--late)}
 .meta .soon{color:var(--warn)}
@@ -128,16 +128,19 @@ main{min-width:0;display:flex;flex-direction:column;gap:22px}
 .pill.done{background:color-mix(in srgb,var(--done) 22%,transparent);color:var(--done)}
 .prio{font-size:11px;font-weight:600;letter-spacing:.04em;padding:2px 7px;border-radius:6px}
 .prio.high{background:var(--pink-soft);color:var(--pink-strong)}
-.exp{border:0;background:none;width:30px;height:30px;border-radius:8px;color:var(--muted);flex:none;transition:transform .2s}
-.exp:hover{background:var(--sunken)}
+.exp{width:24px;height:24px;display:grid;place-items:center;color:var(--muted);flex:none;transition:transform .2s;font-size:18px}
 .task.open .exp{transform:rotate(90deg)}
 
-.detail{border-top:1px dashed var(--line);padding:12px 14px 14px 48px;display:flex;flex-direction:column;gap:12px}
+.detail{border-top:1px dashed var(--line);padding:14px 14px 14px 48px;display:flex;flex-direction:column;gap:14px}
+.d-title{border:0;border-bottom:1px solid var(--line);background:none;padding:4px 0;font-size:16px;font-weight:500;width:100%}
+.d-title:focus{outline:none;border-color:var(--pink-strong)}
+.d-label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .fields{display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-size:13px;color:var(--muted)}
 .fields label{display:flex;align-items:center;gap:6px}
 .fields input,.fields select{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:5px 8px;font-size:13px}
 .subs{display:flex;flex-direction:column;gap:2px}
-.sub{display:flex;align-items:center;gap:10px;padding:5px 6px;border-radius:8px}
+.sub{display:flex;align-items:center;gap:10px;padding:5px 6px 5px calc(6px + var(--d,0) * 26px);border-radius:8px;position:relative}
+.sub[style*="--d:1"]::before,.sub[style*="--d:2"]::before{content:"";position:absolute;left:calc(var(--d) * 26px - 12px);top:0;bottom:0;border-left:1.5px solid var(--line)}
 .sub:hover{background:var(--sunken)}
 .sub input[type=checkbox]{width:17px;height:17px;accent-color:var(--pink-strong);flex:none;margin:0}
 .sub .s-title{flex:1;min-width:0;border:0;background:none;padding:0;font-size:14px}
@@ -145,10 +148,33 @@ main{min-width:0;display:flex;flex-direction:column;gap:22px}
 .sub.done .s-title{text-decoration:line-through;color:var(--muted)}
 .x{border:0;background:none;color:var(--muted);width:26px;height:26px;border-radius:7px;opacity:.6;flex:none}
 .x:hover{opacity:1;color:var(--late);background:var(--pink-soft)}
-.sub-add{display:flex;gap:8px}
+.x.plus:hover{color:var(--blue-strong);background:var(--blue-soft)}
+.sub .x{opacity:0}
+.sub:hover .x,.sub:focus-within .x{opacity:.6}
+.sub:hover .x:hover{opacity:1}
+@media (hover:none){.sub .x{opacity:.6}}
+.sub-add{display:flex;gap:8px;padding-left:calc(var(--d,0) * 26px)}
 .sub-add input{flex:1;min-width:0;border:0;border-bottom:1px solid var(--line);background:none;padding:6px 2px;font-size:14px}
 .sub-add input:focus{outline:none;border-color:var(--blue-strong)}
 .d-foot{display:flex;justify-content:flex-end}
+.res{display:flex;flex-direction:column;gap:10px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px}
+.links{display:flex;flex-direction:column;gap:6px}
+.link{display:flex;align-items:center;gap:10px;min-width:0}
+.link a{flex:1;min-width:0;color:var(--fg);text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:14px}
+.link a:hover{text-decoration:underline;text-decoration-color:var(--pink-strong)}
+.kind{flex:none;font-size:11px;font-weight:600;padding:2px 8px;border-radius:6px;background:var(--sunken);color:var(--muted)}
+.kind.sheet{background:var(--mint);color:var(--on-pink)}
+.kind.doc{background:var(--blue);color:var(--on-pink)}
+.kind.slide{background:var(--peach);color:var(--on-pink)}
+.kind.drive,.kind.form{background:var(--lav);color:var(--on-pink)}
+.kind.figma,.kind.notion,.kind.gh{background:var(--pink);color:var(--on-pink)}
+.link-add{display:flex;gap:8px;flex-wrap:wrap}
+.link-add input{flex:2 1 200px;min-width:0;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:7px 10px;font-size:13px}
+.link-add input[name=label]{flex:1 1 120px}
+.link-add input:focus,.notes:focus{outline:none;border-color:var(--blue-strong)}
+.link-add button{border:0;background:var(--blue);color:var(--on-pink);border-radius:8px;padding:7px 14px;font-size:13px;font-weight:500}
+.link-err{font-size:12px;color:var(--late)}
+.notes{width:100%;min-height:76px;resize:vertical;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 10px;font:inherit;font-size:14px;line-height:1.5}
 
 /* overview */
 .ov{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
@@ -176,12 +202,12 @@ main{min-width:0;display:flex;flex-direction:column;gap:22px}
 .login p{margin:0;color:var(--muted);font-size:14px}
 .people{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .person{display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 8px;border:1.5px solid var(--line);border-radius:14px;background:var(--bg)}
-.person .av{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-weight:600;font-size:18px}
+.person .av{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-weight:600;font-size:18px;color:var(--on-pink)}
 .person.on{border-color:var(--pink-strong);background:var(--pink-soft)}
 .login label{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--muted)}
 .login input[type=password]{border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:11px 12px;font-size:15px}
 .login input[type=password]:focus{outline:none;border-color:var(--pink-strong)}
-.login .go{border:0;background:var(--pink);border-radius:12px;padding:12px;font-weight:600}
+.login .go{border:0;background:var(--pink);color:var(--on-pink);border-radius:12px;padding:12px;font-weight:600}
 .login .go:hover{background:var(--pink-strong);color:var(--on-accent)}
 .login .go:disabled{opacity:.6;cursor:wait}
 .login .err{color:var(--late);font-size:13px;min-height:1em}
@@ -216,10 +242,12 @@ import {initializeFirestore,persistentLocalCache,collection,doc,setDoc,deleteDoc
 const COLORS={pink:"var(--pink)",blue:"var(--blue)",mint:"var(--mint)",lav:"var(--lav)",peach:"var(--peach)"};
 const STATUS={todo:"Chưa làm",doing:"Đang làm",done:"Xong"};
 const uid=()=>Math.random().toString(36).slice(2,10);
+// Subtask nesting depth below a task: levels 0, 1 and 2 (subtask, sub-subtask, third layer).
+const MAX_DEPTH=2;
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const root=document.getElementById("root");
 
-const S={projects:{},view:"overview",filter:"all",open:new Set(),mode:"auth",note:"",armed:null,refocus:null,user:null,pick:Object.keys(ACCOUNTS)[0],loginErr:"",busy:false};
+const S={projects:{},view:"overview",filter:"all",open:new Set(),adding:null,linkErr:{},mode:"auth",note:"",armed:null,refocus:null,user:null,pick:Object.keys(ACCOUNTS)[0],loginErr:"",busy:false};
 let auth=null,fs=null,unsub=null;
 
 /* ---------- theme ---------- */
@@ -237,11 +265,53 @@ const themeHtml=()=>{const t=currentTheme();return `<div class="theme" role="gro
   <button type="button" class="${t==="dark"?"on":""}" data-theme-set="dark">Tối</button></div>`};
 
 /* ---------- progress ---------- */
+function nodePct(n){
+  const c=n.children||[];
+  if(n.done||!c.length)return n.done?1:0;
+  return c.reduce((a,x)=>a+nodePct(x),0)/c.length;
+}
 function taskPct(t){
   if(t.status==="done")return 1;
   const subs=t.subtasks||[];
   if(!subs.length)return t.status==="doing"?.5:0;
-  return subs.filter(s=>s.done).length/subs.length;
+  return subs.reduce((a,x)=>a+nodePct(x),0)/subs.length;
+}
+function findSub(list,id){
+  for(const n of list||[]){
+    if(n.id===id)return n;
+    const r=findSub(n.children,id);if(r)return r;
+  }
+  return null;
+}
+function removeSub(list,id){
+  const i=list.findIndex(n=>n.id===id);
+  if(i>=0){list.splice(i,1);return true}
+  return list.some(n=>n.children&&removeSub(n.children,id));
+}
+function setDone(n,v){n.done=v;(n.children||[]).forEach(c=>setDone(c,v))}
+function rollup(list){
+  (list||[]).forEach(n=>{if(n.children&&n.children.length){rollup(n.children);n.done=n.children.every(c=>c.done)}});
+}
+function linkKind(u){
+  try{
+    const x=new URL(u),h=x.hostname.replace(/^www\./,""),p=x.pathname;
+    if(h==="docs.google.com"){
+      if(p.startsWith("/spreadsheets"))return ["sheet","Sheet"];
+      if(p.startsWith("/document"))return ["doc","Docs"];
+      if(p.startsWith("/presentation"))return ["slide","Slides"];
+      if(p.startsWith("/forms"))return ["form","Form"];
+    }
+    if(h==="drive.google.com")return ["drive","Drive"];
+    if(h.endsWith("figma.com"))return ["figma","Figma"];
+    if(h.endsWith("notion.so")||h.endsWith("notion.site"))return ["notion","Notion"];
+    if(h==="github.com")return ["gh","GitHub"];
+    return ["web",h];
+  }catch(e){return ["web","Link"]}
+}
+function normalizeUrl(raw){
+  let v=raw.trim();if(!v)return null;
+  if(!/^https?:\/\//i.test(v))v="https://"+v;
+  try{const x=new URL(v);if(!/^https?:$/.test(x.protocol)||!x.hostname.includes("."))return null;return x.href}catch(e){return null}
 }
 function projStats(p){
   const ts=p.tasks||[];
@@ -395,34 +465,58 @@ function projectView(p){
     <div class="list">${ts.length?ts.map(x=>taskHtml(x.t)).join(""):
       `<div class="empty"><b>${s.total?"Không có task ở mục này":"Dự án chưa có task"}</b><span>${s.total?"Đổi bộ lọc để xem các task khác.":"Gõ vào ô “Thêm task mới” rồi nhấn Enter."}</span></div>`}</div>`;
 }
+function subsHtml(list,depth,tid){
+  return (list||[]).map(x=>`<div class="sub ${x.done?"done":""}" data-sub="${x.id}" style="--d:${depth}">
+      <input type="checkbox" ${x.done?"checked":""} data-subtoggle aria-label="Xong">
+      <input class="s-title" data-keep="st-${x.id}" value="${esc(x.title)}" data-subtitle aria-label="Tên subtask">
+      ${depth<MAX_DEPTH?`<button class="x plus" data-subchild aria-label="Thêm sub-task con" title="Thêm sub-task con">+</button>`:""}
+      <button class="x" data-subdel aria-label="Xoá" title="Xoá">✕</button>
+    </div>
+    ${subsHtml(x.children,depth+1,tid)}
+    ${S.adding===x.id?`<form class="sub-add" data-subadd data-parent="${x.id}" style="--d:${depth+1}"><input id="sa-${x.id}" data-keep="sa-${x.id}" placeholder="+ Sub-task con, nhấn Enter (Esc để đóng)" autocomplete="off" aria-label="Sub-task con mới"></form>`:""}`).join("");
+}
 function taskHtml(t){
   const subs=t.subtasks||[],nd=subs.filter(x=>x.done).length,pct=taskPct(t),open=S.open.has(t.id),d=dueInfo(t.due,t.status);
-  const st=t.status||"todo";
+  const st=t.status||"todo",links=t.links||[];
   return `<div class="task ${st==="done"?"done":""} ${open?"open":""}" data-task="${t.id}">
-    <div class="row">
+    <div class="row" data-row>
       <button class="chk ${st==="done"?"on":pct>0?"half":""}" style="--p:${Math.round(pct*100)}%" data-toggle aria-label="Đánh dấu xong"></button>
-      <div class="t-main">
-        <input class="t-title" data-keep="tt-${t.id}" data-field="title" value="${esc(t.title)}" aria-label="Tên task">
+      <div class="t-main" role="button" tabindex="0" aria-expanded="${open}" data-expand-key>
+        <span class="t-title">${esc(t.title)}</span>
         <div class="meta num">
           ${t.priority==="high"?`<span class="prio high">ƯU TIÊN</span>`:""}
-          ${subs.length?`<span><span class="mini"><span style="width:${nd/subs.length*100}%"></span></span> ${nd}/${subs.length}</span>`:""}
+          ${subs.length?`<span><span class="mini"><span style="width:${pct*100}%"></span></span> ${nd}/${subs.length}</span>`:""}
           ${d?`<span class="${d.cls}">${d.text}</span>`:""}
+          ${links.length?`<span>${links.length} link</span>`:""}
+          ${t.notes?`<span>Có ghi chú</span>`:""}
         </div>
       </div>
       <select class="pill ${st}" data-field="status" aria-label="Trạng thái">${Object.entries(STATUS).map(([k,l])=>`<option value="${k}" ${st===k?"selected":""}>${l}</option>`).join("")}</select>
-      <button class="exp" data-expand aria-label="Mở chi tiết" aria-expanded="${open}">›</button>
+      <span class="exp" aria-hidden="true">›</span>
     </div>
     ${open?`<div class="detail">
+      <input class="d-title" data-keep="dt-${t.id}" data-field="title" value="${esc(t.title)}" aria-label="Tên task">
       <div class="fields">
         <label>Hạn <input type="date" data-field="due" value="${esc(t.due||"")}"></label>
         <label>Ưu tiên <select data-field="priority"><option value="normal">Bình thường</option><option value="high" ${t.priority==="high"?"selected":""}>Cao</option></select></label>
       </div>
-      <div class="subs">${subs.map(x=>`<div class="sub ${x.done?"done":""}" data-sub="${x.id}">
-          <input type="checkbox" ${x.done?"checked":""} data-subtoggle aria-label="Xong subtask">
-          <input class="s-title" data-keep="st-${x.id}" value="${esc(x.title)}" data-subtitle aria-label="Tên subtask">
-          <button class="x" data-subdel aria-label="Xoá subtask">✕</button>
-        </div>`).join("")}</div>
-      <form class="sub-add" data-subadd><input id="sa-${t.id}" data-keep="sa-${t.id}" placeholder="+ Thêm subtask, nhấn Enter" autocomplete="off" aria-label="Subtask mới"></form>
+      <div class="d-label">Sub-task</div>
+      <div class="subs">${subsHtml(subs,0,t.id)}</div>
+      <form class="sub-add" data-subadd data-parent=""><input id="sa-${t.id}" data-keep="sa-${t.id}" placeholder="+ Thêm sub-task, nhấn Enter" autocomplete="off" aria-label="Sub-task mới"></form>
+      <div class="res">
+        <div class="d-label">Tài liệu & dữ liệu</div>
+        ${links.length?`<div class="links">${links.map(l=>{const [k,kn]=linkKind(l.url);return `<div class="link" data-link="${l.id}">
+            <span class="kind ${k}">${esc(kn)}</span>
+            <a href="${esc(l.url)}" target="_blank" rel="noopener noreferrer" title="${esc(l.url)}">${esc(l.label||l.url)}</a>
+            <button class="x" data-linkdel aria-label="Xoá link" title="Xoá link">✕</button></div>`}).join("")}</div>`:""}
+        <form class="link-add" data-linkadd>
+          <input name="url" id="lu-${t.id}" data-keep="lu-${t.id}" placeholder="Dán link Google Sheet, Drive, Docs…" autocomplete="off" aria-label="Link">
+          <input name="label" data-keep="ll-${t.id}" placeholder="Tên hiển thị (tuỳ chọn)" autocomplete="off" aria-label="Tên link">
+          <button type="submit">Lưu link</button>
+        </form>
+        ${S.linkErr[t.id]?`<div class="link-err">${esc(S.linkErr[t.id])}</div>`:""}
+        <textarea class="notes" data-field="notes" data-keep="nt-${t.id}" placeholder="Ghi chú, số liệu, thông tin cần lưu cho task này…" aria-label="Ghi chú">${esc(t.notes||"")}</textarea>
+      </div>
       <div class="d-foot"><button class="ghost ${S.armed===t.id?"danger":""}" data-deltask>${S.armed===t.id?"Bấm lần nữa để xoá":"Xoá task"}</button></div>
     </div>`:""}
   </div>`;
@@ -432,13 +526,22 @@ function taskHtml(t){
 const findTask=(p,id)=>p.tasks.find(t=>t.id===id);
 function syncStatusFromSubs(t){
   const subs=t.subtasks||[];if(!subs.length)return;
-  const nd=subs.filter(s=>s.done).length;
-  if(nd===subs.length)t.status="done";
-  else if(nd>0)t.status="doing";
+  rollup(subs);
+  const pct=subs.reduce((a,x)=>a+nodePct(x),0)/subs.length;
+  if(pct>=1)t.status="done";
+  else if(pct>0)t.status="doing";
   else if(t.status==="done")t.status="doing";
 }
+function toggleExpand(tid){
+  S.open.has(tid)?S.open.delete(tid):S.open.add(tid);S.armed=null;S.adding=null;render();
+}
 document.addEventListener("click",e=>{
-  const el=e.target.closest("button");if(!el)return;
+  const el=e.target.closest("button");
+  if(!el){
+    const row=e.target.closest("[data-row]");
+    if(row&&!e.target.closest("input,select,a,textarea"))toggleExpand(row.closest("[data-task]").dataset.task);
+    return;
+  }
   if(el.dataset.themeSet){setTheme(el.dataset.themeSet);return}
   if(el.dataset.pick){S.pick=el.dataset.pick;S.loginErr="";S.refocus="#pwd";render();return}
   if("logout" in el.dataset){(async()=>{const ids=[...pending.keys()];ids.forEach(id=>clearTimeout(pending.get(id)));await Promise.all(ids.map(flush));signOut(auth)})();return}
@@ -448,10 +551,11 @@ document.addEventListener("click",e=>{
   const pid=S.view,taskEl=el.closest("[data-task]"),tid=taskEl&&taskEl.dataset.task;
   if(el.dataset.color){mutate(pid,p=>p.color=el.dataset.color);return}
   if("delpj" in el.dataset){if(S.armed==="pj")removeProject(pid);else{S.armed="pj";render()}return}
-  if("expand" in el.dataset){S.open.has(tid)?S.open.delete(tid):S.open.add(tid);S.armed=null;render();return}
-  if("toggle" in el.dataset){mutate(pid,p=>{const t=findTask(p,tid);const done=t.status!=="done";t.status=done?"done":"todo";(t.subtasks||[]).forEach(s=>{if(done)s.done=true})});return}
+  if("toggle" in el.dataset){mutate(pid,p=>{const t=findTask(p,tid);const done=t.status!=="done";t.status=done?"done":"todo";if(done)(t.subtasks||[]).forEach(s=>setDone(s,true))});return}
+  if("subchild" in el.dataset){const sid=el.closest("[data-sub]").dataset.sub;S.adding=S.adding===sid?null:sid;S.refocus="#sa-"+sid;render();return}
+  if("linkdel" in el.dataset){const lid=el.closest("[data-link]").dataset.link;mutate(pid,p=>{const t=findTask(p,tid);t.links=(t.links||[]).filter(l=>l.id!==lid)});return}
   if("deltask" in el.dataset){if(S.armed===tid){S.armed=null;S.open.delete(tid);mutate(pid,p=>p.tasks=p.tasks.filter(t=>t.id!==tid))}else{S.armed=tid;render()}return}
-  if("subdel" in el.dataset){const sid=el.closest("[data-sub]").dataset.sub;mutate(pid,p=>{const t=findTask(p,tid);t.subtasks=t.subtasks.filter(s=>s.id!==sid);syncStatusFromSubs(t)});return}
+  if("subdel" in el.dataset){const sid=el.closest("[data-sub]").dataset.sub;if(S.adding===sid)S.adding=null;mutate(pid,p=>{const t=findTask(p,tid);removeSub(t.subtasks,sid);syncStatusFromSubs(t)});return}
 });
 document.addEventListener("submit",async e=>{
   e.preventDefault();const f=e.target;
@@ -474,21 +578,38 @@ document.addEventListener("submit",async e=>{
   if(f.id==="newPj"){const i=f.querySelector("input");const v=i.value;i.value="";createProject(v);return}
   if(f.id==="addTask"){const i=f.querySelector("input"),v=i.value.trim();if(!v)return;i.value="";S.filter=S.filter==="done"?"all":S.filter;
     S.refocus="#newTask";mutate(S.view,p=>p.tasks.unshift({id:uid(),title:v,status:"todo",priority:"normal",due:"",subtasks:[],createdAt:Date.now()}));return}
-  if("subadd" in f.dataset){const i=f.querySelector("input"),v=i.value.trim(),tid=f.closest("[data-task]").dataset.task;if(!v)return;i.value="";
-    S.refocus="#sa-"+tid;mutate(S.view,p=>{const t=findTask(p,tid);(t.subtasks=t.subtasks||[]).push({id:uid(),title:v,done:false});if(t.status==="done")t.status="doing"})}
+  if("subadd" in f.dataset){const i=f.querySelector("input"),v=i.value.trim(),tid=f.closest("[data-task]").dataset.task,parent=f.dataset.parent;if(!v)return;i.value="";
+    S.refocus="#sa-"+(parent||tid);
+    mutate(S.view,p=>{const t=findTask(p,tid);t.subtasks=t.subtasks||[];
+      const host=parent?findSub(t.subtasks,parent):null;
+      (host?(host.children=host.children||[]):t.subtasks).push({id:uid(),title:v,done:false,children:[]});
+      syncStatusFromSubs(t)});
+    return}
+  if("linkadd" in f.dataset){const tid=f.closest("[data-task]").dataset.task,raw=f.elements.url.value,label=f.elements.label.value.trim();
+    if(!raw.trim())return;
+    const url=normalizeUrl(raw);
+    if(!url){S.linkErr[tid]="Link chưa hợp lệ. Hãy dán đầy đủ địa chỉ, ví dụ https://docs.google.com/…";S.refocus="#lu-"+tid;render();return}
+    delete S.linkErr[tid];f.elements.url.value="";f.elements.label.value="";S.refocus="#lu-"+tid;
+    mutate(S.view,p=>{const t=findTask(p,tid);(t.links=t.links||[]).push({id:uid(),url,label})});
+    return}
 });
 document.addEventListener("change",e=>{
   const el=e.target,pid=S.view;
   if(!S.user)return;
   if(el.id==="pjName"){const v=el.value.trim();if(v)mutate(pid,p=>p.name=v);else render();return}
   const taskEl=el.closest("[data-task]");if(!taskEl)return;const tid=taskEl.dataset.task;
-  if("subtoggle" in el.dataset){const sid=el.closest("[data-sub]").dataset.sub;mutate(pid,p=>{const t=findTask(p,tid);const s=t.subtasks.find(x=>x.id===sid);s.done=el.checked;syncStatusFromSubs(t)});return}
-  if("subtitle" in el.dataset){const sid=el.closest("[data-sub]").dataset.sub,v=el.value.trim();mutate(pid,p=>{const t=findTask(p,tid);if(v)t.subtasks.find(x=>x.id===sid).title=v});return}
+  if("subtoggle" in el.dataset){const sid=el.closest("[data-sub]").dataset.sub;mutate(pid,p=>{const t=findTask(p,tid);setDone(findSub(t.subtasks,sid),el.checked);syncStatusFromSubs(t)});return}
+  if("subtitle" in el.dataset){const sid=el.closest("[data-sub]").dataset.sub,v=el.value.trim();mutate(pid,p=>{const t=findTask(p,tid);if(v)findSub(t.subtasks,sid).title=v});return}
   const f=el.dataset.field;if(!f)return;
   const v=f==="title"?el.value.trim():el.value;if(f==="title"&&!v){render();return}
-  mutate(pid,p=>{const t=findTask(p,tid);t[f]=v;if(f==="status"&&v==="done")(t.subtasks||[]).forEach(s=>s.done=true)});
+  if(f==="notes"&&v===(findTask(S.projects[pid],tid).notes||""))return;
+  mutate(pid,p=>{const t=findTask(p,tid);t[f]=v;if(f==="status"&&v==="done")(t.subtasks||[]).forEach(s=>setDone(s,true))});
 });
-document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.matches(".t-title,.s-title,#pjName"))e.target.blur()});
+document.addEventListener("keydown",e=>{
+  if(e.key==="Enter"&&e.target.matches(".d-title,.s-title,#pjName"))e.target.blur();
+  if((e.key==="Enter"||e.key===" ")&&e.target.matches("[data-expand-key]")){e.preventDefault();toggleExpand(e.target.closest("[data-task]").dataset.task)}
+  if(e.key==="Escape"&&S.adding&&e.target.closest("[data-subadd]")){S.adding=null;render()}
+});
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>{if(!document.documentElement.dataset.theme)render()});
 
 /* ---------- boot ---------- */
@@ -505,7 +626,7 @@ function startData(user){
     S.projects=next;S.mode="ready";
     if(S.view!=="overview"&&!S.projects[S.view])S.view="overview";
     const ae=document.activeElement;
-    if(ae&&ae.matches&&ae.matches(".t-title,.s-title,#pjName")&&ae.value!==ae.defaultValue)return;
+    if(ae&&ae.matches&&ae.matches(".d-title,.s-title,#pjName,.notes")&&ae.value!==ae.defaultValue)return;
     render();
   },err=>{clearTimeout(timer);S.mode="ready";S.note="Mất kết nối dữ liệu ("+(err.code||"lỗi")+"). Tải lại trang để thử lại.";render()});
 }
