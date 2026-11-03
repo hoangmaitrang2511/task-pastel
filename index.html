@@ -203,6 +203,37 @@ main{min-width:0;display:flex;flex-direction:column;gap:22px}
 .due-list .nm{flex:1;min-width:0}
 .due-list small{color:var(--muted)}
 
+.cal{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:flex;flex-direction:column;gap:12px}
+.cal-head{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.cal-head h2{margin:0;font-size:16px;font-weight:600;flex:1;min-width:140px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.cal-wd{font-size:11px;color:var(--muted);text-align:center;letter-spacing:.06em;text-transform:uppercase;padding-bottom:2px}
+.cal-cell{min-height:92px;min-width:0;border-radius:10px;padding:5px;background:var(--bg);display:flex;flex-direction:column;gap:3px;cursor:pointer;border:1.5px solid transparent}
+.cal-cell:hover{border-color:var(--line)}
+.cal-cell.out{opacity:.45}
+.cal-cell.sel{border-color:var(--blue-strong)}
+.cal-n{font-size:12px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;flex:none}
+.cal-cell.today .cal-n{background:var(--pink);color:var(--on-pink);font-weight:600}
+.cal-chip{display:block;width:100%;border:0;text-align:left;font-size:11px;line-height:1.5;padding:1px 6px;border-radius:6px;color:var(--fg);background:color-mix(in srgb,var(--c) 45%,var(--surface));white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cal-chip.done{text-decoration:line-through;opacity:.55}
+.cal-chip.late{box-shadow:inset 3px 0 0 var(--late)}
+.cal-more{font-size:11px;color:var(--muted);padding-left:4px}
+.day{display:flex;flex-direction:column;gap:8px;border-top:1px dashed var(--line);padding-top:12px}
+.day h3{margin:0;font-size:14px;font-weight:600}
+.day-item{display:flex;align-items:center;gap:10px;min-width:0}
+.day-item .dot{width:9px;height:9px;border-radius:50%;flex:none}
+.day-item .go{flex:1;min-width:0;border:0;background:none;text-align:left;padding:4px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.day-item .go small{color:var(--muted)}
+.day-item.done .go{text-decoration:line-through;color:var(--muted)}
+.day-add{display:flex;gap:8px;flex-wrap:wrap}
+.day-add select,.day-add input{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:7px 10px;font-size:13px;min-width:0}
+.day-add select{flex:0 1 180px}
+.day-add input{flex:1 1 180px}
+.day-add input:focus,.day-add select:focus{outline:none;border-color:var(--blue-strong)}
+.gcal{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--blue-strong);text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:4px 10px;background:var(--surface);white-space:nowrap;flex:none}
+.gcal:hover{border-color:var(--blue-strong)}
+.gcal svg{width:13px;height:13px}
+.gcal.icon{padding:5px}
 .empty{border:1.5px dashed var(--line);border-radius:var(--r);padding:34px 20px;text-align:center;color:var(--muted);display:flex;flex-direction:column;gap:6px;align-items:center}
 .empty b{color:var(--fg);font-weight:500}
 .note{font-size:13px;color:var(--warn)}
@@ -238,6 +269,11 @@ main{min-width:0;display:flex;flex-direction:column;gap:22px}
   .rail-foot{flex-direction:row;align-items:center;border:0;margin:0;padding:0;flex:none}
   .who .nm{display:none}
   .detail{padding-left:14px}
+  .cal{padding:10px}
+  .cal-grid{gap:3px}
+  .cal-cell{min-height:54px;padding:4px;gap:2px}
+  .cal-chip{font-size:0;height:5px;padding:0;border-radius:3px}
+  .cal-more{display:none}
   .head h1{font-size:22px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
@@ -257,11 +293,13 @@ const STATUS={todo:"Chưa làm",doing:"Đang làm",done:"Xong"};
 const uid=()=>Math.random().toString(36).slice(2,10);
 // Subtask nesting depth below a task: levels 0, 1 and 2 (subtask, sub-subtask, third layer).
 const MAX_DEPTH=2;
+const CAL_ICON=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>`;
+const ymd=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 const PENCIL=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>`;
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const root=document.getElementById("root");
 
-const S={projects:{},view:"overview",filter:"all",open:new Set(),adding:null,linkErr:{},editTask:null,editLink:null,mode:"auth",note:"",armed:null,refocus:null,user:null,pick:Object.keys(ACCOUNTS)[0],loginErr:"",busy:false};
+const S={projects:{},view:"overview",filter:"all",open:new Set(),adding:null,linkErr:{},editTask:null,editLink:null,calMonth:(()=>{const d=new Date();return new Date(d.getFullYear(),d.getMonth(),1)})(),calDay:ymd(new Date()),calProject:null,mode:"auth",note:"",armed:null,refocus:null,user:null,pick:Object.keys(ACCOUNTS)[0],loginErr:"",busy:false};
 let auth=null,fs=null,unsub=null;
 
 /* ---------- theme ---------- */
@@ -321,6 +359,61 @@ function linkKind(u){
     if(h==="github.com")return ["gh","GitHub"];
     return ["web",h];
   }catch(e){return ["web","Link"]}
+}
+function flatSubs(list,depth=0){
+  return (list||[]).flatMap(n=>[`${"  ".repeat(depth)}${n.done?"[x]":"[ ]"} ${n.title}`,...flatSubs(n.children,depth+1)]);
+}
+function gcalUrl(p,t){
+  const start=t.due.replace(/-/g,""),nx=new Date(t.due+"T00:00:00");nx.setDate(nx.getDate()+1);
+  const lines=[`Dự án: ${p.name}`];
+  const subs=flatSubs(t.subtasks);if(subs.length)lines.push("","Sub-task:",...subs);
+  if((t.links||[]).length)lines.push("","Tài liệu:",...t.links.map(l=>(l.label?l.label+": ":"")+l.url));
+  if(t.notes)lines.push("","Ghi chú:",t.notes.slice(0,600));
+  const q=new URLSearchParams({action:"TEMPLATE",text:t.title,dates:`${start}/${ymd(nx).replace(/-/g,"")}`,details:lines.join("\n")});
+  return "https://calendar.google.com/calendar/render?"+q.toString();
+}
+const gcalLink=(p,t,iconOnly)=>t.due?`<a class="gcal ${iconOnly?"icon":""}" href="${esc(gcalUrl(p,t))}" target="_blank" rel="noopener noreferrer" title="Thêm vào Google Calendar" aria-label="Thêm vào Google Calendar">${CAL_ICON}${iconOnly?"":"Thêm vào Google Calendar"}</a>`:"";
+function calendarHtml(ps){
+  const m=S.calMonth,y=m.getFullYear(),mo=m.getMonth();
+  const offset=(new Date(y,mo,1).getDay()+6)%7,dim=new Date(y,mo+1,0).getDate(),weeks=Math.ceil((offset+dim)/7);
+  const byDay={};
+  ps.forEach(p=>(p.tasks||[]).forEach(t=>{if(t.due)(byDay[t.due]=byDay[t.due]||[]).push({p,t})}));
+  Object.values(byDay).forEach(a=>a.sort((x,z)=>(x.t.status==="done")-(z.t.status==="done")));
+  const todayKey=ymd(new Date());
+  const cells=[];
+  for(let i=0;i<weeks*7;i++){
+    const d=new Date(y,mo,1-offset+i),key=ymd(d),items=byDay[key]||[];
+    cells.push(`<div class="cal-cell ${d.getMonth()!==mo?"out":""} ${key===todayKey?"today":""} ${key===S.calDay?"sel":""}" data-day="${key}" role="button" tabindex="0" aria-label="Ngày ${d.getDate()}/${d.getMonth()+1}, ${items.length} task">
+      <span class="cal-n num">${d.getDate()}</span>
+      ${items.slice(0,3).map(({p,t})=>`<button class="cal-chip ${t.status==="done"?"done":key<todayKey?"late":""}" style="--c:${COLORS[p.color]||COLORS.pink}" data-go="${p.id}" data-openTask="${t.id}" title="${esc(t.title)} · ${esc(p.name)}">${esc(t.title)}</button>`).join("")}
+      ${items.length>3?`<span class="cal-more">+${items.length-3} task</span>`:""}
+    </div>`);
+  }
+  const sel=new Date(S.calDay+"T00:00:00"),dayItems=byDay[S.calDay]||[];
+  if(!S.calProject||!S.projects[S.calProject])S.calProject=ps[0]?ps[0].id:null;
+  const wd=["T2","T3","T4","T5","T6","T7","CN"];
+  return `<section class="cal" aria-label="Lịch">
+    <div class="cal-head">
+      <h2 class="num">Tháng ${mo+1}, ${y}</h2>
+      <button class="btn" data-cal="today">Hôm nay</button>
+      <button class="icon-btn" data-cal="prev" aria-label="Tháng trước">‹</button>
+      <button class="icon-btn" data-cal="next" aria-label="Tháng sau">›</button>
+    </div>
+    <div class="cal-grid">${wd.map(x=>`<div class="cal-wd">${x}</div>`).join("")}${cells.join("")}</div>
+    <div class="day">
+      <h3>${sel.toLocaleDateString("vi-VN",{weekday:"long",day:"2-digit",month:"2-digit",year:"numeric"})}</h3>
+      ${dayItems.length?dayItems.map(({p,t})=>`<div class="day-item ${t.status==="done"?"done":""}">
+          <span class="dot" style="background:${COLORS[p.color]||COLORS.pink}"></span>
+          <button class="go" data-go="${p.id}" data-openTask="${t.id}">${esc(t.title)} <small>· ${esc(p.name)}</small></button>
+          ${gcalLink(p,t,true)}
+        </div>`).join(""):`<span class="sync">Chưa có task nào hạn vào ngày này.</span>`}
+      ${ps.length?`<form class="day-add" data-dayadd>
+        <select id="calPj" aria-label="Dự án">${ps.map(p=>`<option value="${p.id}" ${p.id===S.calProject?"selected":""}>${esc(p.name)}</option>`).join("")}</select>
+        <input id="calTask" data-keep="caltask" placeholder="Thêm task cho ngày này…" autocomplete="off" aria-label="Task mới cho ngày đã chọn">
+        <button type="submit" class="btn primary">Thêm</button>
+      </form>`:""}
+    </div>
+  </section>`;
 }
 function normalizeUrl(raw){
   let v=raw.trim();if(!v)return null;
@@ -450,6 +543,7 @@ function overview(){
         <h3><span class="dot" style="background:${COLORS[p.color]}"></span>${esc(p.name)}</h3>
         <div class="meter"><div class="bar"><span style="width:${s.pct}%"></span></div><b class="num" style="font-size:15px">${s.pct}%</b></div>
         ${countsHtml(s)}</button>`}).join("")}</div>
+    ${calendarHtml(ps)}
     ${upcoming.length?`<div class="sec-title">Sắp đến hạn</div><div class="due-list">${upcoming.map(({p,t,d})=>`<button data-go="${p.id}" data-openTask="${t.id}">
         <span class="dot" style="width:8px;height:8px;border-radius:50%;background:${COLORS[p.color]}"></span>
         <span class="nm">${esc(t.title)} <small>· ${esc(p.name)}</small></span><small style="${d.cls?`color:var(--${d.cls==="late"?"late":"warn"})`:""}">${d.text}</small></button>`).join("")}</div>`:""}`;
@@ -517,6 +611,7 @@ function taskHtml(t){
       <div class="fields">
         <label>Hạn <input type="date" data-field="due" value="${esc(t.due||"")}"></label>
         <label>Ưu tiên <select data-field="priority"><option value="normal">Bình thường</option><option value="high" ${t.priority==="high"?"selected":""}>Cao</option></select></label>
+        ${gcalLink(S.projects[S.view],t,false)}
       </div>
       <div class="d-label">Sub-task</div>
       <div class="subs">${subsHtml(subs,0,t.id)}</div>
@@ -556,16 +651,28 @@ function syncStatusFromSubs(t){
   else if(pct>0)t.status="doing";
   else if(t.status==="done")t.status="doing";
 }
+function selectDay(key){
+  S.calDay=key;const d=new Date(key+"T00:00:00");
+  if(d.getMonth()!==S.calMonth.getMonth()||d.getFullYear()!==S.calMonth.getFullYear())S.calMonth=new Date(d.getFullYear(),d.getMonth(),1);
+  render();
+}
 function toggleExpand(tid){
   S.open.has(tid)?S.open.delete(tid):S.open.add(tid);S.armed=null;S.adding=null;render();
 }
 document.addEventListener("click",e=>{
   const el=e.target.closest("button");
   if(!el){
+    const cell=e.target.closest("[data-day]");
+    if(cell){selectDay(cell.dataset.day);return}
     const row=e.target.closest("[data-row]");
     if(row&&!e.target.closest("input,select,a,textarea,form"))toggleExpand(row.closest("[data-task]").dataset.task);
     return;
   }
+  if(el.dataset.cal){
+    const c=el.dataset.cal,m=S.calMonth;
+    if(c==="today"){const d=new Date();S.calMonth=new Date(d.getFullYear(),d.getMonth(),1);S.calDay=ymd(d)}
+    else S.calMonth=new Date(m.getFullYear(),m.getMonth()+(c==="next"?1:-1),1);
+    render();return}
   if(el.dataset.themeSet){setTheme(el.dataset.themeSet);return}
   if(el.dataset.pick){S.pick=el.dataset.pick;S.loginErr="";S.refocus="#pwd";render();return}
   if("logout" in el.dataset){(async()=>{const ids=[...pending.keys()];ids.forEach(id=>clearTimeout(pending.get(id)));await Promise.all(ids.map(flush));signOut(auth)})();return}
@@ -613,6 +720,10 @@ document.addEventListener("submit",async e=>{
       (host?(host.children=host.children||[]):t.subtasks).push({id:uid(),title:v,done:false,children:[]});
       syncStatusFromSubs(t)});
     return}
+  if("dayadd" in f.dataset){const v=f.elements[1].value.trim(),pid=f.elements[0].value;if(!v||!S.projects[pid])return;
+    S.calProject=pid;f.elements[1].value="";S.refocus="#calTask";
+    mutate(pid,p=>p.tasks.unshift({id:uid(),title:v,status:"todo",priority:"normal",due:S.calDay,subtasks:[],createdAt:Date.now()}));
+    return}
   if("taskedit" in f.dataset){const tid=f.closest("[data-task]").dataset.task,v=f.elements.title.value.trim();
     S.editTask=null;
     if(v&&v!==findTask(S.projects[S.view],tid).title)mutate(S.view,p=>{findTask(p,tid).title=v});else render();
@@ -634,6 +745,7 @@ document.addEventListener("submit",async e=>{
 document.addEventListener("change",e=>{
   const el=e.target,pid=S.view;
   if(!S.user)return;
+  if(el.id==="calPj"){S.calProject=el.value;return}
   if(el.id==="pjName"){const v=el.value.trim();if(v)mutate(pid,p=>p.name=v);else render();return}
   const taskEl=el.closest("[data-task]");if(!taskEl)return;const tid=taskEl.dataset.task;
   if("subtoggle" in el.dataset){const sid=el.closest("[data-sub]").dataset.sub;mutate(pid,p=>{const t=findTask(p,tid);setDone(findSub(t.subtasks,sid),el.checked);syncStatusFromSubs(t)});return}
@@ -645,6 +757,7 @@ document.addEventListener("change",e=>{
 });
 document.addEventListener("keydown",e=>{
   if(e.key==="Enter"&&e.target.matches(".d-title,.s-title,#pjName"))e.target.blur();
+  if((e.key==="Enter"||e.key===" ")&&e.target.matches("[data-day]")){e.preventDefault();selectDay(e.target.dataset.day);return}
   if((e.key==="Enter"||e.key===" ")&&e.target.matches("[data-expand-key]")){e.preventDefault();toggleExpand(e.target.closest("[data-task]").dataset.task)}
   if(e.key==="Escape"&&S.adding&&e.target.closest("[data-subadd]")){S.adding=null;render()}
   if(e.key==="Escape"&&(S.editTask||S.editLink)&&e.target.closest("[data-taskedit],[data-linkedit]")){S.editTask=null;S.editLink=null;render()}
