@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Bảng Task Pastel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap">
+<style>
+/* Layout: project rail on the left, one focused task list on the right; rail turns into a chip strip on phones */
+:root{
+  --bg:#fbf7fa; --surface:#ffffff; --sunken:#f5eef3; --line:#eedfe8;
+  --fg:#3b2f3a; --muted:#8a7a88;
+  --pink:#f6bfd6; --pink-strong:#e28bb0; --pink-soft:#fde8f1;
+  --blue:#bcdcf4; --blue-strong:#6fa9d6; --blue-soft:#e6f2fc;
+  --mint:#c4ead8; --lav:#dccff3; --peach:#fbd9c4;
+  --done:#74b99a; --warn:#e3a35c; --late:#d9677f;
+  --font:"Lexend",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r:14px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#1d1a24; --surface:#26222f; --sunken:#2e2939; --line:#3a3446;
+  --fg:#f1e9f2; --muted:#a99db0;
+  --pink:#a65f80; --pink-strong:#f0a3c4; --pink-soft:#3a2836;
+  --blue:#4f7aa0; --blue-strong:#94c6ec; --blue-soft:#24324a;
+  --mint:#4c8a70; --lav:#7563a0; --peach:#a5735a;
+  --done:#86cdac; --warn:#f0b878; --late:#ef8ba0; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1d1a24; --surface:#26222f; --sunken:#2e2939; --line:#3a3446;
+  --fg:#f1e9f2; --muted:#a99db0;
+  --pink:#a65f80; --pink-strong:#f0a3c4; --pink-soft:#3a2836;
+  --blue:#4f7aa0; --blue-strong:#94c6ec; --blue-soft:#24324a;
+  --mint:#4c8a70; --lav:#7563a0; --peach:#a5735a;
+  --done:#86cdac; --warn:#f0b878; --late:#ef8ba0; color-scheme:dark}
+
+*{box-sizing:border-box}
+html,body{min-height:100%;margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--font);font-size:15px;line-height:1.5;font-weight:400}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--blue-strong);outline-offset:2px;border-radius:8px}
+.num{font-variant-numeric:tabular-nums}
+
+.app{display:grid;grid-template-columns:260px minmax(0,1fr);gap:28px;max-width:1120px;margin:0 auto;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 48px}
+
+/* rail */
+.rail{display:flex;flex-direction:column;gap:6px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 20px);align-self:start}
+.brand{display:flex;align-items:center;gap:10px;font-weight:600;font-size:17px;padding:0 8px 14px}
+.brand i{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--pink) 50%,var(--blue) 50%);display:block}
+.rail-label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:12px 10px 4px}
+.pj{display:flex;align-items:center;gap:10px;width:100%;padding:9px 10px;border:0;background:none;border-radius:11px;text-align:left}
+.pj:hover{background:var(--sunken)}
+.pj.on{background:var(--surface);box-shadow:0 1px 0 var(--line),0 0 0 1px var(--line)}
+.pj .dot{width:10px;height:10px;border-radius:50%;flex:none}
+.pj .nm{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pj .pc{font-size:12px;color:var(--muted)}
+.new-pj{display:flex;gap:6px;padding:6px 4px 0}
+.new-pj input{flex:1;min-width:0;border:1px dashed var(--line);background:transparent;border-radius:10px;padding:8px 10px;font-size:14px}
+.new-pj input:focus{border-style:solid;border-color:var(--pink-strong);outline:none}
+.sync{font-size:12px;color:var(--muted);padding:14px 10px 0}
+
+/* main */
+main{min-width:0;display:flex;flex-direction:column;gap:22px}
+.head{display:flex;flex-direction:column;gap:14px}
+.head-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.head h1{margin:0;font-size:26px;font-weight:600;letter-spacing:-.01em;text-wrap:balance;flex:1;min-width:0}
+.head h1 input{width:100%;border:0;background:none;font-weight:600;font-size:inherit;padding:0;letter-spacing:inherit}
+.head h1 input:focus{outline:none;box-shadow:0 2px 0 var(--pink)}
+.swatches{display:flex;gap:6px}
+.sw{width:18px;height:18px;border-radius:50%;border:2px solid transparent;padding:0}
+.sw.on{border-color:var(--fg)}
+.ghost{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:6px 12px;font-size:13px;color:var(--muted)}
+.ghost:hover{color:var(--fg)}
+.ghost.danger{color:var(--late);border-color:var(--late)}
+
+.meter{display:flex;align-items:center;gap:14px}
+.bar{flex:1;height:10px;border-radius:99px;background:var(--sunken);overflow:hidden}
+.bar>span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--pink),var(--blue));transition:width .35s ease}
+.meter b{font-weight:600;font-size:20px;min-width:52px;text-align:right}
+.counts{display:flex;gap:8px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.counts span{display:inline-flex;align-items:center;gap:6px}
+.counts i{width:8px;height:8px;border-radius:50%;display:inline-block}
+
+.tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.add{flex:1;min-width:220px;display:flex;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.add input{flex:1;min-width:0;border:0;background:none;padding:12px 14px}
+.add input:focus{outline:none}
+.add:focus-within{border-color:var(--pink-strong)}
+.add button{border:0;background:var(--pink);padding:0 18px;font-weight:500}
+.add button:hover{background:var(--pink-strong);color:#fff}
+.tabs{display:flex;background:var(--sunken);border-radius:12px;padding:3px}
+.tabs button{border:0;background:none;padding:7px 12px;border-radius:9px;font-size:13px;color:var(--muted)}
+.tabs button.on{background:var(--surface);color:var(--fg);box-shadow:0 1px 2px rgba(0,0,0,.06)}
+
+/* tasks */
+.list{display:flex;flex-direction:column;gap:8px}
+.task{background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+.task.done .t-title{text-decoration:line-through;color:var(--muted)}
+.row{display:flex;align-items:center;gap:12px;padding:12px 14px}
+.chk{width:22px;height:22px;flex:none;border-radius:50%;border:2px solid var(--blue-strong);background:none;display:grid;place-items:center;padding:0}
+.chk.half{background:conic-gradient(var(--blue) var(--p),transparent 0)}
+.chk.on{background:var(--done);border-color:var(--done)}
+.chk.on::after{content:"";width:9px;height:5px;border:2px solid #fff;border-top:0;border-right:0;transform:translateY(-1px) rotate(-45deg)}
+.t-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.t-title{border:0;background:none;padding:0;width:100%;font-weight:500}
+.t-title:focus{outline:none;box-shadow:0 1px 0 var(--pink)}
+.meta{display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-size:12px;color:var(--muted)}
+.meta .late{color:var(--late)}
+.meta .soon{color:var(--warn)}
+.mini{width:56px;height:5px;border-radius:9px;background:var(--sunken);overflow:hidden;display:inline-block;vertical-align:middle}
+.mini>span{display:block;height:100%;background:var(--blue-strong)}
+.pill{border:0;border-radius:99px;padding:4px 10px;font-size:12px;font-weight:500;appearance:none;-webkit-appearance:none;text-align:center}
+.pill.todo{background:var(--sunken);color:var(--muted)}
+.pill.doing{background:var(--blue-soft);color:var(--blue-strong)}
+.pill.done{background:color-mix(in srgb,var(--done) 22%,transparent);color:var(--done)}
+.prio{font-size:11px;font-weight:600;letter-spacing:.04em;padding:2px 7px;border-radius:6px}
+.prio.high{background:var(--pink-soft);color:var(--pink-strong)}
+.exp{border:0;background:none;width:30px;height:30px;border-radius:8px;color:var(--muted);flex:none;transition:transform .2s}
+.exp:hover{background:var(--sunken)}
+.task.open .exp{transform:rotate(90deg)}
+
+.detail{border-top:1px dashed var(--line);padding:12px 14px 14px 48px;display:flex;flex-direction:column;gap:12px}
+.fields{display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-size:13px;color:var(--muted)}
+.fields label{display:flex;align-items:center;gap:6px}
+.fields input,.fields select{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:5px 8px;font-size:13px}
+.subs{display:flex;flex-direction:column;gap:2px}
+.sub{display:flex;align-items:center;gap:10px;padding:5px 6px;border-radius:8px}
+.sub:hover{background:var(--sunken)}
+.sub input[type=checkbox]{width:17px;height:17px;accent-color:var(--pink-strong);flex:none;margin:0}
+.sub .s-title{flex:1;min-width:0;border:0;background:none;padding:0;font-size:14px}
+.sub .s-title:focus{outline:none;box-shadow:0 1px 0 var(--pink)}
+.sub.done .s-title{text-decoration:line-through;color:var(--muted)}
+.x{border:0;background:none;color:var(--muted);width:26px;height:26px;border-radius:7px;opacity:.6;flex:none}
+.x:hover{opacity:1;color:var(--late);background:var(--pink-soft)}
+.sub-add{display:flex;gap:8px}
+.sub-add input{flex:1;min-width:0;border:0;border-bottom:1px solid var(--line);background:none;padding:6px 2px;font-size:14px}
+.sub-add input:focus{outline:none;border-color:var(--blue-strong)}
+.d-foot{display:flex;justify-content:flex-end}
+
+/* overview */
+.ov{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:12px;text-align:left}
+.card:hover{border-color:var(--pink-strong)}
+.card h3{margin:0;font-size:16px;font-weight:600;display:flex;align-items:center;gap:8px}
+.card h3 .dot{width:10px;height:10px;border-radius:50%}
+.card .counts{font-size:12px}
+.sec-title{font-size:13px;font-weight:500;color:var(--muted);margin:6px 0 -6px}
+.due-list{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+.due-list button{display:flex;gap:12px;align-items:center;border:0;background:none;padding:11px 14px;text-align:left;border-bottom:1px solid var(--line)}
+.due-list button:last-child{border-bottom:0}
+.due-list .nm{flex:1;min-width:0}
+.due-list small{color:var(--muted)}
+
+.empty{border:1.5px dashed var(--line);border-radius:var(--r);padding:34px 20px;text-align:center;color:var(--muted);display:flex;flex-direction:column;gap:6px;align-items:center}
+.empty b{color:var(--fg);font-weight:500}
+.note{font-size:13px;color:var(--warn)}
+
+@media (max-width:760px){
+  .app{grid-template-columns:minmax(0,1fr);gap:18px;padding-block:16px 40px}
+  .rail{position:static;flex-direction:row;overflow-x:auto;gap:6px;padding-bottom:4px;align-items:center}
+  .brand{padding:0 6px 0 0;flex:none}
+  .brand span,.rail-label,.sync{display:none}
+  .pj{width:auto;flex:none;padding:7px 12px;background:var(--surface);border:1px solid var(--line)}
+  .pj .pc{display:none}
+  .new-pj{padding:0;flex:none}
+  .new-pj input{width:130px}
+  .detail{padding-left:14px}
+  .head h1{font-size:22px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <nav class="rail" id="rail" aria-label="Dự án"></nav>
+  <main id="main"></main>
+</div>
+
+<script>
+const COLORS={pink:"var(--pink)",blue:"var(--blue)",mint:"var(--mint)",lav:"var(--lav)",peach:"var(--peach)"};
+const STATUS={todo:"Chưa làm",doing:"Đang làm",done:"Xong"};
+const LS="pastel-task-tracker-v1";
+const uid=()=>Math.random().toString(36).slice(2,10);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+const S={projects:{},view:"overview",filter:"all",open:new Set(),mode:"loading",readOnly:false,note:"",armed:null,refocus:null};
+let db=null;
+
+/* ---------- progress ---------- */
+function taskPct(t){
+  if(t.status==="done")return 1;
+  const subs=t.subtasks||[];
+  if(!subs.length)return t.status==="doing"?.5:0;
+  return subs.filter(s=>s.done).length/subs.length;
+}
+function projStats(p){
+  const ts=p.tasks||[];
+  const c={todo:0,doing:0,done:0};ts.forEach(t=>c[t.status||"todo"]++);
+  const pct=ts.length?ts.reduce((a,t)=>a+taskPct(t),0)/ts.length:0;
+  return {...c,total:ts.length,pct:Math.round(pct*100)};
+}
+function dueInfo(d,status){
+  if(!d)return null;
+  const today=new Date();today.setHours(0,0,0,0);
+  const days=Math.round((new Date(d+"T00:00:00")-today)/864e5);
+  const label=new Date(d+"T00:00:00").toLocaleDateString("vi-VN",{day:"2-digit",month:"2-digit"});
+  if(status==="done")return {cls:"",text:label,days};
+  if(days<0)return {cls:"late",text:`Trễ ${-days} ngày`,days};
+  if(days===0)return {cls:"soon",text:"Hôm nay",days};
+  if(days<=2)return {cls:"soon",text:`Còn ${days} ngày`,days};
+  return {cls:"",text:label,days};
+}
+const sorted=()=>Object.values(S.projects).sort((a,b)=>(a.order??0)-(b.order??0)||String(a.name).localeCompare(b.name));
+
+/* ---------- persistence ---------- */
+const pending=new Map(), saving=new Set();
+function scheduleSave(pid){
+  clearTimeout(pending.get(pid));
+  pending.set(pid,setTimeout(()=>flush(pid),350));
+}
+async function flush(pid){
+  pending.delete(pid);
+  if(S.mode==="local"){saveLocal();return}
+  if(saving.has(pid)){scheduleSave(pid);return}
+  saving.add(pid);
+  try{
+    const p=S.projects[pid];
+    const ref=db.collection("projects").doc(pid);
+    if(p) await ref.set(stripId(p)); else await ref.delete();
+  }catch(e){
+    if(e&&e.code==="invalid_argument"){S.readOnly=true;S.note="Bạn chỉ có quyền xem trang này."}
+    else S.note=e&&e.code==="quota_exceeded"?"Bộ nhớ đã đầy, hãy xoá bớt dự án cũ.":"Chưa lưu được, sẽ thử lại khi bạn sửa tiếp.";
+    render();
+  }finally{saving.delete(pid)}
+}
+const stripId=p=>{const {id,...rest}=p;return JSON.parse(JSON.stringify(rest))};
+function saveLocal(){try{localStorage.setItem(LS,JSON.stringify(S.projects))}catch(e){}}
+function loadLocal(){try{return JSON.parse(localStorage.getItem(LS)||"null")}catch(e){return null}}
+
+function mutate(pid,fn){
+  if(S.readOnly)return;
+  const p=structuredClone(S.projects[pid]);fn(p);p.updatedAt=Date.now();
+  S.projects[pid]=p;render();scheduleSave(pid);
+}
+function createProject(name){
+  if(S.readOnly||!name.trim())return;
+  const id=uid(),keys=Object.keys(COLORS);
+  const order=Math.max(0,...Object.values(S.projects).map(p=>p.order??0))+1;
+  S.projects[id]={id,name:name.trim(),color:keys[Object.keys(S.projects).length%keys.length],order,tasks:[],createdAt:Date.now()};
+  S.view=id;render();scheduleSave(id);
+  S.refocus="#newTask";
+}
+function removeProject(pid){delete S.projects[pid];S.view="overview";render();scheduleSave(pid)}
+
+/* ---------- render ---------- */
+function render(){
+  const ae=document.activeElement;
+  const keep=ae&&ae.dataset&&ae.dataset.keep?ae.dataset.keep:null;
+  const caret=keep&&ae.selectionStart!=null?[ae.value,ae.selectionStart]:null;
+  renderRail();renderMain();
+  const target=S.refocus?document.querySelector(S.refocus):keep?document.querySelector(`[data-keep="${keep}"]`):null;
+  if(target){target.focus();if(caret&&!S.refocus&&target.value===caret[0])try{target.setSelectionRange(caret[1],caret[1])}catch(e){}}
+  S.refocus=null;
+}
+function renderRail(){
+  const ps=sorted();
+  document.getElementById("rail").innerHTML=`
+    <div class="brand"><i></i><span>Task Pastel</span></div>
+    <button class="pj ${S.view==="overview"?"on":""}" data-go="overview"><span class="dot" style="background:linear-gradient(135deg,var(--pink) 50%,var(--blue) 50%)"></span><span class="nm">Tổng quan</span></button>
+    <div class="rail-label">Dự án</div>
+    ${ps.map(p=>`<button class="pj ${S.view===p.id?"on":""}" data-go="${p.id}"><span class="dot" style="background:${COLORS[p.color]||COLORS.pink}"></span><span class="nm">${esc(p.name)}</span><span class="pc num">${projStats(p).pct}%</span></button>`).join("")}
+    ${S.readOnly?"":`<form class="new-pj" id="newPj"><input id="newPjName" data-keep="newpj" placeholder="+ Dự án mới" aria-label="Tên dự án mới" autocomplete="off"></form>`}
+    <div class="sync">${S.mode==="db"?"Đã đồng bộ tự động":S.mode==="local"?"Đang lưu trên trình duyệt này":"Đang tải…"}</div>`;
+}
+function renderMain(){
+  const m=document.getElementById("main");
+  if(S.mode==="loading"){m.innerHTML=`<div class="empty"><b>Đang tải dự án…</b><span>${esc(S.note)}</span></div>`;return}
+  const p=S.projects[S.view];
+  m.innerHTML=(S.note?`<div class="note">${esc(S.note)}</div>`:"")+(p?projectView(p):overview());
+}
+function overview(){
+  const ps=sorted();
+  if(!ps.length)return `<div class="head"><div class="head-top"><h1>Tổng quan</h1></div></div>
+    <div class="empty"><b>Chưa có dự án nào</b><span>Gõ tên dự án vào ô “+ Dự án mới” ở thanh bên rồi nhấn Enter để bắt đầu.</span></div>`;
+  let all={todo:0,doing:0,done:0,total:0},sum=0;
+  ps.forEach(p=>{const s=projStats(p);all.todo+=s.todo;all.doing+=s.doing;all.done+=s.done;all.total+=s.total;sum+=(p.tasks||[]).reduce((a,t)=>a+taskPct(t),0)});
+  const pct=all.total?Math.round(sum/all.total*100):0;
+  const upcoming=ps.flatMap(p=>(p.tasks||[]).filter(t=>t.due&&t.status!=="done").map(t=>({p,t,d:dueInfo(t.due,t.status)}))).sort((a,b)=>a.d.days-b.d.days).slice(0,6);
+  return `<div class="head">
+      <div class="head-top"><h1>Tổng quan</h1></div>
+      <div class="meter"><div class="bar"><span style="width:${pct}%"></span></div><b class="num">${pct}%</b></div>
+      ${countsHtml(all)}
+    </div>
+    <div class="ov">${ps.map(p=>{const s=projStats(p);return `<button class="card" data-go="${p.id}">
+        <h3><span class="dot" style="background:${COLORS[p.color]}"></span>${esc(p.name)}</h3>
+        <div class="meter"><div class="bar"><span style="width:${s.pct}%"></span></div><b class="num" style="font-size:15px">${s.pct}%</b></div>
+        ${countsHtml(s)}</button>`}).join("")}</div>
+    ${upcoming.length?`<div class="sec-title">Sắp đến hạn</div><div class="due-list">${upcoming.map(({p,t,d})=>`<button data-go="${p.id}" data-openTask="${t.id}">
+        <span class="dot" style="width:8px;height:8px;border-radius:50%;background:${COLORS[p.color]}"></span>
+        <span class="nm">${esc(t.title)} <small>· ${esc(p.name)}</small></span><small class="${d.cls}" style="${d.cls?`color:var(--${d.cls==="late"?"late":"warn"})`:""}">${d.text}</small></button>`).join("")}</div>`:""}`;
+}
+function countsHtml(s){
+  return `<div class="counts num"><span><i style="background:var(--muted)"></i>${s.todo} chưa làm</span><span><i style="background:var(--blue-strong)"></i>${s.doing} đang làm</span><span><i style="background:var(--done)"></i>${s.done} xong</span></div>`;
+}
+function projectView(p){
+  const s=projStats(p),ro=S.readOnly;
+  let ts=(p.tasks||[]).map((t,i)=>({t,i}));
+  if(S.filter!=="all")ts=ts.filter(x=>(x.t.status||"todo")===S.filter);
+  ts.sort((a,b)=>(a.t.status==="done")-(b.t.status==="done")||(b.t.priority==="high")-(a.t.priority==="high")||a.i-b.i);
+  const tabs=[["all","Tất cả",s.total],["todo","Chưa làm",s.todo],["doing","Đang làm",s.doing],["done","Xong",s.done]];
+  return `<div class="head">
+      <div class="head-top">
+        <h1><input id="pjName" data-keep="pjname" value="${esc(p.name)}" aria-label="Tên dự án" ${ro?"readonly":""}></h1>
+        ${ro?"":`<div class="swatches">${Object.keys(COLORS).map(k=>`<button class="sw ${p.color===k?"on":""}" style="background:${COLORS[k]}" data-color="${k}" aria-label="Màu ${k}"></button>`).join("")}</div>
+        <button class="ghost ${S.armed==="pj"?"danger":""}" data-delpj>${S.armed==="pj"?"Bấm lần nữa để xoá":"Xoá dự án"}</button>`}
+      </div>
+      <div class="meter"><div class="bar"><span style="width:${s.pct}%"></span></div><b class="num">${s.pct}%</b></div>
+      ${countsHtml(s)}
+    </div>
+    <div class="tools">
+      ${ro?"":`<form class="add" id="addTask"><input id="newTask" data-keep="newtask" placeholder="Thêm task mới…" autocomplete="off" aria-label="Task mới"><button type="submit">Thêm</button></form>`}
+      <div class="tabs" role="tablist">${tabs.map(([k,l,n])=>`<button class="${S.filter===k?"on":""}" data-filter="${k}">${l} <span class="num">${n}</span></button>`).join("")}</div>
+    </div>
+    <div class="list">${ts.length?ts.map(x=>taskHtml(x.t)).join(""):
+      `<div class="empty"><b>${s.total?"Không có task ở mục này":"Dự án chưa có task"}</b><span>${s.total?"Đổi bộ lọc để xem các task khác.":"Gõ vào ô “Thêm task mới” rồi nhấn Enter."}</span></div>`}</div>`;
+}
+function taskHtml(t){
+  const subs=t.subtasks||[],nd=subs.filter(x=>x.done).length,pct=taskPct(t),open=S.open.has(t.id),d=dueInfo(t.due,t.status),ro=S.readOnly?"disabled":"";
+  const st=t.status||"todo";
+  return `<div class="task ${st==="done"?"done":""} ${open?"open":""}" data-task="${t.id}">
+    <div class="row">
+      <button class="chk ${st==="done"?"on":pct>0?"half":""}" style="--p:${Math.round(pct*100)}%" data-toggle aria-label="Đánh dấu xong" ${ro}></button>
+      <div class="t-main">
+        <input class="t-title" data-keep="tt-${t.id}" data-field="title" value="${esc(t.title)}" aria-label="Tên task" ${S.readOnly?"readonly":""}>
+        <div class="meta num">
+          ${t.priority==="high"?`<span class="prio high">ƯU TIÊN</span>`:""}
+          ${subs.length?`<span><span class="mini"><span style="width:${nd/subs.length*100}%"></span></span> ${nd}/${subs.length}</span>`:""}
+          ${d?`<span class="${d.cls}">${d.text}</span>`:""}
+        </div>
+      </div>
+      <select class="pill ${st}" data-field="status" aria-label="Trạng thái" ${ro}>${Object.entries(STATUS).map(([k,l])=>`<option value="${k}" ${st===k?"selected":""}>${l}</option>`).join("")}</select>
+      <button class="exp" data-expand aria-label="Mở chi tiết" aria-expanded="${open}">›</button>
+    </div>
+    ${open?`<div class="detail">
+      <div class="fields">
+        <label>Hạn <input type="date" data-field="due" value="${esc(t.due||"")}" ${ro}></label>
+        <label>Ưu tiên <select data-field="priority" ${ro}><option value="normal">Bình thường</option><option value="high" ${t.priority==="high"?"selected":""}>Cao</option></select></label>
+      </div>
+      <div class="subs">${subs.map(x=>`<div class="sub ${x.done?"done":""}" data-sub="${x.id}">
+          <input type="checkbox" ${x.done?"checked":""} data-subtoggle aria-label="Xong subtask" ${ro}>
+          <input class="s-title" data-keep="st-${x.id}" value="${esc(x.title)}" data-subtitle aria-label="Tên subtask" ${S.readOnly?"readonly":""}>
+          ${S.readOnly?"":`<button class="x" data-subdel aria-label="Xoá subtask">✕</button>`}
+        </div>`).join("")}</div>
+      ${S.readOnly?"":`<form class="sub-add" data-subadd><input id="sa-${t.id}" data-keep="sa-${t.id}" placeholder="+ Thêm subtask, nhấn Enter" autocomplete="off" aria-label="Subtask mới"></form>
+      <div class="d-foot"><button class="ghost ${S.armed===t.id?"danger":""}" data-deltask>${S.armed===t.id?"Bấm lần nữa để xoá":"Xoá task"}</button></div>`}
+    </div>`:""}
+  </div>`;
+}
+
+/* ---------- events ---------- */
+const findTask=(p,id)=>p.tasks.find(t=>t.id===id);
+function syncStatusFromSubs(t){
+  const subs=t.subtasks||[];if(!subs.length)return;
+  const nd=subs.filter(s=>s.done).length;
+  if(nd===subs.length)t.status="done";
+  else if(nd>0)t.status="doing";
+  else if(t.status==="done")t.status="doing";
+}
+document.addEventListener("click",e=>{
+  const el=e.target.closest("button");if(!el)return;
+  const go=el.dataset.go;
+  if(go){S.view=go;S.filter="all";S.armed=null;if(el.dataset.opentask)S.open.add(el.dataset.opentask);render();return}
+  if(el.dataset.filter){S.filter=el.dataset.filter;render();return}
+  const pid=S.view,taskEl=el.closest("[data-task]"),tid=taskEl&&taskEl.dataset.task;
+  if(el.dataset.color){mutate(pid,p=>p.color=el.dataset.color);return}
+  if("delpj" in el.dataset){if(S.armed==="pj")removeProject(pid);else{S.armed="pj";render()}return}
+  if("expand" in el.dataset){S.open.has(tid)?S.open.delete(tid):S.open.add(tid);S.armed=null;render();return}
+  if("toggle" in el.dataset){mutate(pid,p=>{const t=findTask(p,tid);const done=t.status!=="done";t.status=done?"done":"todo";(t.subtasks||[]).forEach(s=>{if(done)s.done=true})});return}
+  if("deltask" in el.dataset){if(S.armed===tid){S.armed=null;S.open.delete(tid);mutate(pid,p=>p.tasks=p.tasks.filter(t=>t.id!==tid))}else{S.armed=tid;render()}return}
+  if("subdel" in el.dataset){const sid=el.closest("[data-sub]").dataset.sub;mutate(pid,p=>{const t=findTask(p,tid);t.subtasks=t.subtasks.filter(s=>s.id!==sid);syncStatusFromSubs(t)});return}
+});
+document.addEventListener("submit",e=>{
+  e.preventDefault();const f=e.target;
+  if(f.id==="newPj"){const i=f.querySelector("input");const v=i.value;i.value="";createProject(v);return}
+  if(f.id==="addTask"){const i=f.querySelector("input"),v=i.value.trim();if(!v)return;i.value="";S.filter=S.filter==="done"?"all":S.filter;
+    S.refocus="#newTask";mutate(S.view,p=>p.tasks.unshift({id:uid(),title:v,status:"todo",priority:"normal",due:"",subtasks:[],createdAt:Date.now()}));return}
+  if("subadd" in f.dataset){const i=f.querySelector("input"),v=i.value.trim(),tid=f.closest("[data-task]").dataset.task;if(!v)return;i.value="";
+    S.refocus="#sa-"+tid;mutate(S.view,p=>{const t=findTask(p,tid);(t.subtasks=t.subtasks||[]).push({id:uid(),title:v,done:false});if(t.status==="done")t.status="doing"})}
+});
+document.addEventListener("change",e=>{
+  const el=e.target,pid=S.view;
+  if(el.id==="pjName"){const v=el.value.trim();if(v)mutate(pid,p=>p.name=v);else render();return}
+  const taskEl=el.closest("[data-task]");if(!taskEl)return;const tid=taskEl.dataset.task;
+  if("subtoggle" in el.dataset){const sid=el.closest("[data-sub]").dataset.sub;mutate(pid,p=>{const t=findTask(p,tid);const s=t.subtasks.find(x=>x.id===sid);s.done=el.checked;syncStatusFromSubs(t)});return}
+  if("subtitle" in el.dataset){const sid=el.closest("[data-sub]").dataset.sub,v=el.value.trim();mutate(pid,p=>{const t=findTask(p,tid);if(v)t.subtasks.find(x=>x.id===sid).title=v});return}
+  const f=el.dataset.field;if(!f)return;
+  const v=f==="title"?el.value.trim():el.value;if(f==="title"&&!v){render();return}
+  mutate(pid,p=>{const t=findTask(p,tid);t[f]=v;if(f==="status"&&v==="done")(t.subtasks||[]).forEach(s=>s.done=true)});
+});
+document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.matches(".t-title,.s-title,#pjName"))e.target.blur()});
+
+/* ---------- boot ---------- */
+render();
+(async()=>{
+  db=window.claude&&window.claude.use?await window.claude.use("db").catch(()=>null):null;
+  if(!db){
+    S.mode="local";S.projects=loadLocal()||{};
+    Object.entries(S.projects).forEach(([id,p])=>p.id=id);
+    render();return;
+  }
+  try{const user=await window.claude.use("user");if(user&&typeof user.can==="function"){const ok=await user.can("data.write");if(ok===false)S.readOnly=true}}catch(e){}
+  const timer=setTimeout(()=>{S.note="Chưa kết nối được dữ liệu, có thể đang hiển thị bản cũ.";if(S.mode==="loading")S.mode="db";render()},10000);
+  db.collection("projects").onSnapshot(snap=>{
+    if(!snap.metadata.fromCache){clearTimeout(timer);if(S.note.startsWith("Chưa kết nối"))S.note=""}
+    const next={};
+    snap.docs.forEach(d=>{next[d.id]={...structuredClone(d.data()),id:d.id}});
+    for(const id of [...pending.keys(),...saving]){if(S.projects[id])next[id]=S.projects[id];else delete next[id]}
+    S.projects=next;S.mode="db";
+    if(S.view!=="overview"&&!S.projects[S.view])S.view="overview";
+    const ae=document.activeElement;
+    if(ae&&ae.matches&&ae.matches(".t-title,.s-title,#pjName")&&ae.value!==ae.defaultValue)return;
+    render();
+  },err=>{clearTimeout(timer);S.mode="db";S.note="Mất kết nối dữ liệu. Tải lại trang để thử lại.";render()});
+})();
+</script>
+</body>
+</html>
