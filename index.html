@@ -250,8 +250,7 @@ function createProject(name){
   const id=uid(),keys=Object.keys(COLORS);
   const order=Math.max(0,...Object.values(S.projects).map(p=>p.order??0))+1;
   S.projects[id]={id,name:name.trim(),color:keys[Object.keys(S.projects).length%keys.length],order,tasks:[],createdAt:Date.now()};
-  S.view=id;render();scheduleSave(id);
-  S.refocus="#newTask";
+  S.view=id;S.refocus="#newTask";render();scheduleSave(id);
 }
 function removeProject(pid){delete S.projects[pid];S.view="overview";render();scheduleSave(pid)}
 
