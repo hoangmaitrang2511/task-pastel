@@ -86,6 +86,12 @@ main{min-width:0;display:flex;flex-direction:column;gap:22px}
 .ghost:hover{color:var(--fg)}
 .ghost.danger{color:var(--late);border-color:var(--late)}
 
+.goal{display:flex;flex-direction:column;gap:6px;background:linear-gradient(135deg,var(--pink-soft),var(--blue-soft));border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+.goal label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.goal textarea{border:0;background:none;resize:none;padding:0;font:inherit;font-size:15px;line-height:1.55;color:var(--fg);min-height:1.55em;field-sizing:content;overflow:hidden}
+.goal textarea:focus{outline:none}
+.goal textarea::placeholder{color:var(--muted)}
+.card .goal-line{font-size:13px;color:var(--muted);margin:-4px 0 0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .meter{display:flex;align-items:center;gap:14px}
 .bar{flex:1;height:10px;border-radius:99px;background:var(--sunken);overflow:hidden}
 .bar>span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--pink),var(--blue));transition:width .35s ease}
@@ -525,7 +531,11 @@ function renderMain(){
   if(S.mode==="loading"){m.innerHTML=`<div class="empty"><b>Đang tải dự án…</b><span>${esc(S.note)}</span></div>`;return}
   const p=S.projects[S.view];
   m.innerHTML=(S.note?`<div class="note">${esc(S.note)}</div>`:"")+(p?projectView(p):overview());
+  requestAnimationFrame(()=>autosize(document.getElementById("pjGoal")));
 }
+// Browsers without field-sizing:content grow the goal box by hand, after layout settles.
+const NATIVE_FIT=window.CSS&&CSS.supports("field-sizing","content");
+function autosize(el){if(!el||NATIVE_FIT)return;el.style.height="auto";el.style.height=el.scrollHeight+"px"}
 function overview(){
   const ps=sorted();
   if(!ps.length)return `<div class="head"><div class="head-top"><h1>Chào ${esc(S.user?.name||"")}</h1></div></div>
@@ -541,6 +551,7 @@ function overview(){
     </div>
     <div class="ov">${ps.map(p=>{const s=projStats(p);return `<button class="card" data-go="${p.id}">
         <h3><span class="dot" style="background:${COLORS[p.color]}"></span>${esc(p.name)}</h3>
+        ${p.goal?`<p class="goal-line">${esc(p.goal)}</p>`:""}
         <div class="meter"><div class="bar"><span style="width:${s.pct}%"></span></div><b class="num" style="font-size:15px">${s.pct}%</b></div>
         ${countsHtml(s)}</button>`}).join("")}</div>
     ${calendarHtml(ps)}
@@ -562,6 +573,10 @@ function projectView(p){
         <h1><input id="pjName" data-keep="pjname" value="${esc(p.name)}" aria-label="Tên dự án"></h1>
         <div class="swatches">${Object.keys(COLORS).map(k=>`<button class="sw ${p.color===k?"on":""}" style="background:${COLORS[k]}" data-color="${k}" aria-label="Màu ${k}"></button>`).join("")}</div>
         <button class="ghost ${S.armed==="pj"?"danger":""}" data-delpj>${S.armed==="pj"?"Bấm lần nữa để xoá":"Xoá dự án"}</button>
+      </div>
+      <div class="goal">
+        <label for="pjGoal">Mục tiêu</label>
+        <textarea id="pjGoal" data-keep="pjgoal" rows="1" placeholder="Dự án này cần đạt được gì? Ví dụ: Ra mắt website trước 30/11 với 1.000 lượt truy cập tuần đầu.">${esc(p.goal||"")}</textarea>
       </div>
       <div class="meter"><div class="bar"><span style="width:${s.pct}%"></span></div><b class="num">${s.pct}%</b></div>
       ${countsHtml(s)}
@@ -746,6 +761,7 @@ document.addEventListener("change",e=>{
   const el=e.target,pid=S.view;
   if(!S.user)return;
   if(el.id==="calPj"){S.calProject=el.value;return}
+  if(el.id==="pjGoal"){const v=el.value.trim();if(v!==(S.projects[pid].goal||""))mutate(pid,p=>p.goal=v);return}
   if(el.id==="pjName"){const v=el.value.trim();if(v)mutate(pid,p=>p.name=v);else render();return}
   const taskEl=el.closest("[data-task]");if(!taskEl)return;const tid=taskEl.dataset.task;
   if("subtoggle" in el.dataset){const sid=el.closest("[data-sub]").dataset.sub;mutate(pid,p=>{const t=findTask(p,tid);setDone(findSub(t.subtasks,sid),el.checked);syncStatusFromSubs(t)});return}
@@ -755,6 +771,7 @@ document.addEventListener("change",e=>{
   if(f==="notes"&&v===(findTask(S.projects[pid],tid).notes||""))return;
   mutate(pid,p=>{const t=findTask(p,tid);t[f]=v;if(f==="status"&&v==="done")(t.subtasks||[]).forEach(s=>setDone(s,true))});
 });
+document.addEventListener("input",e=>{if(e.target.id==="pjGoal")autosize(e.target)});
 document.addEventListener("keydown",e=>{
   if(e.key==="Enter"&&e.target.matches(".d-title,.s-title,#pjName"))e.target.blur();
   if((e.key==="Enter"||e.key===" ")&&e.target.matches("[data-day]")){e.preventDefault();selectDay(e.target.dataset.day);return}
@@ -778,7 +795,7 @@ function startData(user){
     S.projects=next;S.mode="ready";
     if(S.view!=="overview"&&!S.projects[S.view])S.view="overview";
     const ae=document.activeElement;
-    if(ae&&ae.matches&&ae.matches(".d-title,.s-title,#pjName,.notes,.te-input,.le-input")&&ae.value!==ae.defaultValue)return;
+    if(ae&&ae.matches&&ae.matches(".d-title,.s-title,#pjName,#pjGoal,.notes,.te-input,.le-input")&&ae.value!==ae.defaultValue)return;
     render();
   },err=>{clearTimeout(timer);S.mode="ready";S.note="Mất kết nối dữ liệu ("+(err.code||"lỗi")+"). Tải lại trang để thử lại.";render()});
 }
